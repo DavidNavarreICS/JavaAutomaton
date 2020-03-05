@@ -30,6 +30,9 @@ import java.util.logging.Logger;
 public class Automaton<Event extends Enum, State extends Enum> {
 
     private final Map<Pair<Event, State>, Map<Precondition, Pair<State, Action>>> automaton;
+    /**
+    * Array of event
+    */
     private final Event[] events;
     private final State[] states;
     private State currentState;
