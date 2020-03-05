@@ -9,6 +9,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <sonar.projectKey>DavidNavarreICS_JavaAutomaton</sonar.projectKey>
+        <sonar.organization>davidnavarreics</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>ee2c76299b4d84caa51e554f55467420c589d6a1</sonar.login>
     </properties>
     <name>Java Automaton</name>
     <description>This library allows the creation of automata using the Mealy notations with a java implementation.</description>
