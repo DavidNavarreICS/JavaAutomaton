@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 David Navarre.
+ * Copyright 2020 David.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.irit.ics.jautomaton;
-
 /**
- *
- * @author David
+ * This package contains classes that allows
+ * the creation of automaton using Java,
+ * by registering states, transitions, actions and preconditions.
  */
-public interface Precondition {
-
-    /**
-     * Verify the precondition.
-     *
-     * @param parameters the parameters
-     * @return <b>true</b> if the precondition is verified according to the
-     * given parameters.
-     */
-    boolean isVerified(Object... parameters);
-}
+package fr.irit.ics.jautomaton;
