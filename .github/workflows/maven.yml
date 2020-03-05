@@ -6,6 +6,7 @@ name: Java CI with Maven
 env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    sonar.projectKey: JavaAutomaton${GITHUB_REF##*/}
 
 on:
   push:
@@ -27,4 +28,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Maven
-      run: mvn -B package sonar:sonar -Dsonar.projectKey=JavaAutomaton${GITHUB_REF##*/} --file pom.xml
+      run: mvn -B package sonar:sonar --file pom.xml
