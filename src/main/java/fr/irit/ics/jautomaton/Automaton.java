@@ -93,7 +93,7 @@ public class Automaton<Event extends Enum, State extends Enum> {
         } else if (Objects.isNull(name) || !name.matches(
                 "[a-zA-Z]([a-zA-Z0-9_])*")) {
             throw new IllegalArgumentException(
-                    "< " + name + " > is not a correct name for a register. Name must fit [a-zA-Z]([a-zA-Z0-9_])*");
+                    "< " + name + " > is not a correct name for a register. \nName must fit [a-zA-Z]([a-zA-Z0-9_])*");
         }
         registers.put(name, null);
     }
