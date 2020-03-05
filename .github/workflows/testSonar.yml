@@ -2,7 +2,8 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
 name: Java CI with Maven
-
+env:
+  SONAR_TOKEN: 8f5684a96b33276fb6745dc9126f5c1fe09a632a
 on:
   push:
     branches:
