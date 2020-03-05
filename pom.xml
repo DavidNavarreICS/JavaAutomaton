@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!-- <sonar.projectKey>DavidNavarreICS_JAutomaton</sonar.projectKey>-->
+        <sonar.projectKey>DavidNavarreICS_JAutomaton</sonar.projectKey>
         <sonar.organization>davidnavarreics</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.login>fb96f6f8e6c405b55542c441fa93308b0d6d9511</sonar.login>
