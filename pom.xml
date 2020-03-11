@@ -10,7 +10,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <sonar.organization>davidnavarreics</sonar.organization>
-        <sonar.projectKey>JAutomaton</sonar.projectKey>
+        <sonar.projectKey>DavidNavarreICS_JavaAutomaton</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <name>Java Automaton</name>
