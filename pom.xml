@@ -3,6 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.irit.ics</groupId>
     <artifactId>JAutomaton</artifactId>
+    <name>Java Automaton</name>
+    <description>This library allows the creation of automata using the Mealy notations with a java implementation.</description>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -14,8 +16,6 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.libraries></sonar.java.libraries>
     </properties>
-    <name>Java Automaton</name>
-    <description>This library allows the creation of automata using the Mealy notations with a java implementation.</description>
     <build>
         <plugins>
             <plugin>

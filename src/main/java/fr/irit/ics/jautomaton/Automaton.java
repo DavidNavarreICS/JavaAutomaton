@@ -47,7 +47,20 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Main data structure that contains any items defining the automaton.
      */
-    private final Map<Pair<E, S>, Map<Precondition, Pair<S, Action>>> automaton;
+    private final Map<Pair<E, S>, Map<Precondition, Pair<S, Action>>> dataStructure;
+    /**
+     * The state property prefix, used for property change listening.
+     */
+    public static final String STATE_PROPERTY = "state";
+    /**
+     * The event enabling property prefix, used for property change listening.
+     */
+    public static final String ENABLED_SUFFIX = "_enabled";
+    /**
+     * The class logger.
+     */
+    private static final Logger LOG = Logger.
+            getLogger(Automaton.class.getName());
     /**
      * The set of all allowed events.
      */
@@ -74,6 +87,31 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * and/or preconditions).
      */
     private final Map<String, Object> registers;
+
+    /**
+     * Build the base structure of an automaton based on a set of events and a
+     * set of states.
+     *
+     * @param theEvents must be set containing at least one event.
+     * @param theStates must be set containing at least one state.
+     */
+    public Automaton(final Set<E> theEvents, final Set<S> theStates) {
+        if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The set of Events cannot be empty");
+        }
+        if (Objects.isNull(theStates) || theStates.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The set of States cannot be empty");
+        }
+
+        this.events = Collections.unmodifiableSet(theEvents);
+        this.states = Collections.unmodifiableSet(theStates);
+        dataStructure = new HashMap<>();
+        initialStateData = new HashMap<>();
+        support = new PropertyChangeSupport(this);
+        registers = new HashMap<>();
+    }
 
     /**
      * Try to go from the current state to the future state.
@@ -119,38 +157,13 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void acceptEvent(final E event, final Object... parameters) {
         Pair<E, S> key = new Pair<>(event, currentState);
-        if (automaton.containsKey(key)) {
-            tryStateChange(event, automaton.get(key), parameters);
+        if (dataStructure.containsKey(key)) {
+            tryStateChange(event, dataStructure.get(key), parameters);
         } else {
             throw new IllegalStateException(
                     "Event " + event
                     + " is not allowed in state " + currentState);
         }
-    }
-
-    /**
-     * Build the base structure of an automaton based on a set of events and a
-     * set of states.
-     *
-     * @param theEvents must be set containing at least one event.
-     * @param theStates must be set containing at least one state.
-     */
-    public Automaton(final Set<E> theEvents, final Set<S> theStates) {
-        if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "The set of Events cannot be empty");
-        }
-        if (Objects.isNull(theStates) || theStates.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "The set of States cannot be empty");
-        }
-
-        this.events = Collections.unmodifiableSet(theEvents);
-        this.states = Collections.unmodifiableSet(theStates);
-        automaton = new HashMap<>();
-        initialStateData = new HashMap<>();
-        support = new PropertyChangeSupport(this);
-        registers = new HashMap<>();
     }
 
     /**
@@ -255,7 +268,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
         if (initialStates.size() == 1) {
             final Action action;
-            if (initialActions.isEmpty()) {
+            if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
                 action = NullAction.getInstance();
             } else {
                 action = initialActions.get(0);
@@ -267,12 +280,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 final S initialState = initialStates.get(i);
                 final Action action;
                 final Precondition precondition;
-                if (initialActions.size() < i + 1) {
+                if (Objects.isNull(initialActions)
+                        || initialActions.size() < i + 1) {
                     action = NullAction.getInstance();
                 } else {
                     action = initialActions.get(i);
                 }
-                if (initialPreconditions.size() < i + 1) {
+                if (Objects.isNull(initialPreconditions)
+                        || initialPreconditions.size() < i + 1) {
                     precondition = TruePrecondition.getInstance();
                 } else {
                     precondition = initialPreconditions.get(i);
@@ -328,11 +343,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final Precondition precondition) {
         final Map<Precondition, Pair<S, Action>> transitions;
         final Pair<E, S> key = new Pair<>(event, state1);
-        if (automaton.containsKey(key)) {
-            transitions = automaton.get(key);
+        if (dataStructure.containsKey(key)) {
+            transitions = dataStructure.get(key);
         } else {
             transitions = new HashMap<>();
-            automaton.put(key, transitions);
+            dataStructure.put(key, transitions);
         }
         transitions.put(precondition, new Pair<>(state2, action));
     }
@@ -358,14 +373,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
         S oldState = currentState;
         currentState = state;
         final Set<E> oldEnableEvents = new HashSet<>(events.size());
-        automaton.keySet().stream()
+        dataStructure.keySet().stream()
                 .filter((pair) -> (pair.getSecond().equals(oldState)))
                 .forEachOrdered((pair) -> {
                     oldEnableEvents.add(pair.getFirst());
                 });
 
         final Set<E> enableEvents = new HashSet<>(events.size());
-        automaton.keySet().stream().
+        dataStructure.keySet().stream().
                 filter((pair) -> (pair.getSecond().equals(currentState))).
                 forEachOrdered((pair) -> {
                     enableEvents.add(pair.getFirst());
@@ -377,11 +392,6 @@ public final class Automaton<E extends Enum, S extends Enum> {
                     anyEvent));
         });
     }
-    /**
-     * The class logger.
-     */
-    private static final Logger LOG = Logger.
-            getLogger(Automaton.class.getName());
 
     /**
      * Provides the enabling of an event.
@@ -393,18 +403,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
         if (Objects.isNull(currentState)) {
             return false;
         }
-        return (automaton.keySet().stream()
+        return (dataStructure.keySet().stream()
                 .anyMatch((pair) -> (currentState.equals(pair.getSecond())
                 && pair.getFirst().equals(event))));
     }
-    /**
-     * The state property prefix, used for property change listening.
-     */
-    public static final String STATE_PROPERTY = "state";
-    /**
-     * The event enabling property prefix, used for property change listening.
-     */
-    public static final String ENABLED_SUFFIX = "_enabled";
 
     /**
      * Registers a listener of any changes within the automaton.
@@ -605,7 +607,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public String toString() {
         String toString = "Initial State: " + initialStateData.values() + "\n";
         for (S state : states) {
-            toString = automaton.
+            toString = dataStructure.
                     entrySet().stream()
                     .filter((entry) -> (entry.getKey().second.equals(state)))
                     .map((entry)
