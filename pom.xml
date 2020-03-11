@@ -12,6 +12,7 @@
         <sonar.organization>davidnavarreics</sonar.organization>
         <sonar.projectKey>DavidNavarreICS_JavaAutomaton</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.java.libraries></sonar.java.libraries>
     </properties>
     <name>Java Automaton</name>
     <description>This library allows the creation of automata using the Mealy notations with a java implementation.</description>
@@ -32,6 +33,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
                     <configLocation>config/sun_checks.xml</configLocation>
                 </configuration>
