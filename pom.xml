@@ -9,13 +9,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <my.project.modifier>master</my.project.modifier>
         <sonar.organization>davidnavarreics</sonar.organization>
-        <sonar.projectKey>JAutomaton[${my.project.modifier}]</sonar.projectKey>
+        <sonar.projectKey>JAutomaton</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.login>3d59e8cec6d03fa5f690be3cff49c6817bc29e78</sonar.login>
     </properties>
-    <name>Java Automaton ${my.project.modifier}</name>
+    <name>Java Automaton</name>
     <description>This library allows the creation of automata using the Mealy notations with a java implementation.</description>
     <build>
         <plugins>
