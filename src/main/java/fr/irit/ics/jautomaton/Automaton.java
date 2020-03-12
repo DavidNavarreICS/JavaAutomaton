@@ -46,6 +46,10 @@ import java.util.logging.Logger;
 public final class Automaton<E extends Enum, S extends Enum> {
 
     /**
+     * REGEX that must be followed by regiters names.
+     */
+    private static final String REGISTER_NAME_PATTERN = "[a-zA-Z]([a-zA-Z0-9_])*";
+    /**
      * Main data structure that contains any items defining the automaton.
      */
     private final Map<Pair<E, S>, Map<Precondition, Pair<S, Action>>> dataStructure;
@@ -88,6 +92,34 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * and/or preconditions).
      */
     private final Map<String, Object> registers;
+    /**
+     * Error message used when the set of states is empty.
+     */
+    private static final String ERROR_SET_OF__STATES_CANNOT_BE_EMPTY = "The set of States cannot be empty";
+    /**
+     * Error message used when the set of events is empty.
+     */
+    private static final String ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY = "The set of Events cannot be empty";
+    /**
+     * String used as a prefix for any state in any message.
+     */
+    private static final String STATE_PREFIX = "State ";
+    /**
+     * String used as a prefix for any event in any message.
+     */
+    private static final String EVENT_PREFIX = "Event ";
+    /**
+     * String used as a prefix for any register in any message.
+     */
+    private static final String REGISTER_PREFIX = "Register ";
+    /**
+     * String that provides an error message.
+     */
+    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY = "The set of initial states cannot be empty";
+    /**
+     * String that provides an error message.
+     */
+    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL = "The initial state cannot be null";
 
     /**
      * Build the base structure of an automaton based on a set of events and a
@@ -98,14 +130,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public Automaton(final Set<E> theEvents, final Set<S> theStates) {
         if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
-            LOG.log(Level.SEVERE, "The set of Events cannot be empty");
+            LOG.log(Level.SEVERE, ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    "The set of Events cannot be empty");
+                    ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY);
         }
         if (Objects.isNull(theStates) || theStates.isEmpty()) {
-            LOG.log(Level.SEVERE, "The set of States cannot be empty");
+            LOG.log(Level.SEVERE, ERROR_SET_OF__STATES_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    "The set of States cannot be empty");
+                    ERROR_SET_OF__STATES_CANNOT_BE_EMPTY);
         }
 
         this.events = Collections.unmodifiableSet(theEvents);
@@ -114,6 +146,68 @@ public final class Automaton<E extends Enum, S extends Enum> {
         initialStateData = new HashMap<>();
         support = new PropertyChangeSupport(this);
         registers = new HashMap<>();
+    }
+
+    /**
+     * Produces an error message when no state change is possible from the
+     * current state.
+     *
+     * @param event the event that occured
+     * @param parameters the parameters used for precondition and/or action
+     * computing
+     * @return the error message
+     */
+    private String getErrorMessageNoPossibleStateChange(final E event, final Object... parameters) {
+        return "No state change possible with parameters "
+                + Arrays.deepToString(parameters)
+                + " for " + EVENT_PREFIX + event
+                + " from " + STATE_PREFIX + currentState;
+    }
+
+    /**
+     * Produces an error message used when an event is not allowed when the
+     * system is in the current state.
+     *
+     * @param event the event that occured
+     * @return the error message
+     */
+    private String getErrorMessageEventNotAllowedInContext(final E event) {
+        return EVENT_PREFIX + event
+                + " is not allowed in " + STATE_PREFIX + currentState;
+    }
+
+    /**
+     * Provides an error message used when attempting to create an already
+     * existing register.
+     *
+     * @param name the name of the register
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterAlreadyExists(final String name) {
+        return REGISTER_PREFIX + name + " already exists.";
+    }
+
+    /**
+     * Provides an error message used when attempting to use an non-existing
+     * register.
+     *
+     * @param name the name of the register
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterDoesNotExist(final String name) {
+        return REGISTER_PREFIX + name + " does not exist.";
+    }
+
+    /**
+     * Produces an error message used when the refister name is incorrect.
+     *
+     * @param name the name of the register
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterNameIncorrect(final String name) {
+        return "< " + name + " > is not a correct name for a register."
+                + "\nName must fit "
+                + REGISTER_NAME_PATTERN;
     }
 
     /**
@@ -143,14 +237,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
         if (!foundState) {
             LOG.log(
-                    Level.SEVERE,
-                    "No state change possible with parameters {0} for event {1} from state {2}",
-                    new Object[]{Arrays.deepToString(parameters), event, currentState});
+                    Level.SEVERE, getErrorMessageNoPossibleStateChange(event, parameters));
             throw new IllegalArgumentException(
-                    "No state change possible with parameters "
-                    + Arrays.deepToString(parameters)
-                    + " for event " + event
-                    + " from state " + currentState);
+                    getErrorMessageNoPossibleStateChange(event, parameters));
         }
     }
 
@@ -168,11 +257,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
             tryStateChange(event, dataStructure.get(key), parameters);
         } else {
             LOG.log(Level.SEVERE,
-                    "Event {0} is not allowed in state {1}",
-                    new Object[]{event, currentState});
+                    getErrorMessageEventNotAllowedInContext(event));
             throw new IllegalStateException(
-                    "Event " + event
-                    + " is not allowed in state " + currentState);
+                    getErrorMessageEventNotAllowedInContext(event));
         }
     }
 
@@ -183,17 +270,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void createRegister(final String name) {
         if (registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, "Register {0} already exists.", name);
+            LOG.log(Level.SEVERE, getErrorMessageRegisterAlreadyExists(name));
             throw new IllegalArgumentException(
-                    "Register " + name + " already exists.");
-        } else if (Objects.isNull(name) || !name.matches(
-                "[a-zA-Z]([a-zA-Z0-9_])*")) {
+                    getErrorMessageRegisterAlreadyExists(name));
+        } else if (Objects.isNull(name) || !name.matches(REGISTER_NAME_PATTERN)) {
             LOG.log(Level.SEVERE,
-                    "< {0} > is not a correct name for a register.\nName must fit [a-zA-Z]([a-zA-Z0-9_])*",
-                    name);
+                    getErrorMessageRegisterNameIncorrect(name));
             throw new IllegalArgumentException(
-                    "< " + name + " > is not a correct name for a register."
-                    + "\nName must fit [a-zA-Z]([a-zA-Z0-9_])*");
+                    getErrorMessageRegisterNameIncorrect(name));
         }
         registers.put(name, null);
     }
@@ -208,9 +292,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public <T> T getRegisterValue(final String name, final Class<T> type) {
         if (!registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, "Register {0} does not exist.", name);
+            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
             throw new IllegalArgumentException(
-                    "Register " + name + " does not exist.");
+                    getErrorMessageRegisterDoesNotExist(name));
         }
         return type.cast(registers.get(name));
     }
@@ -223,9 +307,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void setRegisterValue(final String name, final Object value) {
         if (!registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, "Register {0} does not exist.", name);
+            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
             throw new IllegalArgumentException(
-                    "Register " + name + " does not exist.");
+                    getErrorMessageRegisterDoesNotExist(name));
         }
         registers.put(name, value);
     }
@@ -252,9 +336,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         final List<S> initialStates = new ArrayList<>(1);
         final List<Action> initialActions = new ArrayList<>(1);
         if (Objects.isNull(initialState)) {
-            LOG.log(Level.SEVERE, "The initial state cannot be null");
+            LOG.log(Level.SEVERE, ERROR_INITIAL_STATE_CANNOT_BE_NULL);
             throw new IllegalArgumentException(
-                    "The initial state cannot be null");
+                    ERROR_INITIAL_STATE_CANNOT_BE_NULL);
         }
         initialStates.add(initialState);
         if (Objects.isNull(initialAction)) {
@@ -280,9 +364,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
         if (Objects.isNull(initialStates) || initialStates.isEmpty()) {
-            LOG.log(Level.SEVERE, "The set of initial states cannot be empty");
+            LOG.log(Level.SEVERE, ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    "The set of initial states cannot be empty");
+                    ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
         }
         if (initialStates.size() == 1) {
             final Action action;
@@ -637,5 +721,4 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
         return toString;
     }
-
 }
