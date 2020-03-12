@@ -713,9 +713,6 @@ public final class Automaton<E extends Enum, S extends Enum> {
 
         @Override
         public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
             if (obj == null) {
                 return false;
             }
@@ -723,10 +720,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 return false;
             }
             final Pair<?, ?> other = (Pair<?, ?>) obj;
-            if (!Objects.equals(this.first, other.first)) {
-                return false;
-            }
-            return (Objects.equals(this.second, other.second));
+            return (Objects.equals(this.first, other.first)
+                    && Objects.equals(this.second, other.second));
         }
 
         @Override
