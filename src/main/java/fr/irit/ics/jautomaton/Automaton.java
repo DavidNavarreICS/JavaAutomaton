@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * This class allows the creation of simple automata based on the Mealy
@@ -48,7 +49,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final String REGISTER_NAME_PATTERN = "[a-zA-Z]([a-zA-Z0-9_])*";
+    private static final String REGISTER_NAME_PATTERN_STRING = "[a-zA-Z]([a-zA-Z0-9_])*";
+    /**
+     * REGEX that must be followed by regiters names.
+     */
+    private static final Pattern REGISTER_NAME_PATTERN = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
     /**
      * Main data structure that contains any items defining the automaton.
      */
@@ -207,7 +212,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     private static String getErrorMessageRegisterNameIncorrect(final String name) {
         return "< " + name + " > is not a correct name for a register."
                 + "\nName must fit "
-                + REGISTER_NAME_PATTERN;
+                + REGISTER_NAME_PATTERN_STRING;
     }
 
     /**
@@ -273,13 +278,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
             LOG.log(Level.SEVERE, getErrorMessageRegisterAlreadyExists(name));
             throw new IllegalArgumentException(
                     getErrorMessageRegisterAlreadyExists(name));
-        } else if (Objects.isNull(name) || !name.matches(REGISTER_NAME_PATTERN)) {
+        } else if (Objects.isNull(name) || !REGISTER_NAME_PATTERN.matcher(name).matches()) {
             LOG.log(Level.SEVERE,
                     getErrorMessageRegisterNameIncorrect(name));
             throw new IllegalArgumentException(
                     getErrorMessageRegisterNameIncorrect(name));
+        } else {
+            registers.put(name, null);
         }
-        registers.put(name, null);
     }
 
     /**
@@ -333,14 +339,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void registerInitialization(final S initialState,
             final Action initialAction) {
-        final List<S> initialStates = new ArrayList<>(1);
-        final List<Action> initialActions = new ArrayList<>(1);
         if (Objects.isNull(initialState)) {
             LOG.log(Level.SEVERE, ERROR_INITIAL_STATE_CANNOT_BE_NULL);
             throw new IllegalArgumentException(
                     ERROR_INITIAL_STATE_CANNOT_BE_NULL);
         }
+        final List<S> initialStates = new ArrayList<>(1);
         initialStates.add(initialState);
+        final List<Action> initialActions = new ArrayList<>(1);
         if (Objects.isNull(initialAction)) {
             initialActions.add(NullAction.getInstance());
         } else {
@@ -369,34 +375,59 @@ public final class Automaton<E extends Enum, S extends Enum> {
                     ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
         }
         if (initialStates.size() == 1) {
+            registerSingleStateInitialization(initialActions, initialStates);
+        } else {
+            registerMultipleStatesInitilization(initialStates, initialActions, initialPreconditions);
+        }
+    }
+
+    /**
+     * Registers the initialization process in the case of a single initial
+     * state.
+     *
+     * @param initialActions the initial action (at most the first item of this
+     * list is used)
+     * @param initialStates the initial state (at most the first item of this
+     * list is used)
+     */
+    private void registerSingleStateInitialization(final List<Action> initialActions, final List<S> initialStates) {
+        final Action action;
+        if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
+            action = NullAction.getInstance();
+        } else {
+            action = initialActions.get(0);
+        }
+        initialStateData.put(TruePrecondition.getInstance(),
+                new Pair<>(initialStates.get(0), action));
+    }
+
+    /**
+     * Registers the initialization process in the case of multiple initial
+     * states.
+     *
+     * @param initialStates the non empty set of initial states
+     * @param initialActions a set of actions
+     * @param initialPreconditions a set of precondition
+     */
+    private void registerMultipleStatesInitilization(final List<S> initialStates, final List<Action> initialActions, final List<Precondition> initialPreconditions) {
+        for (int i = 0; i < initialStates.size(); i++) {
+            final S initialState = initialStates.get(i);
             final Action action;
-            if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
+            final Precondition precondition;
+            if (Objects.isNull(initialActions)
+                    || initialActions.size() < i + 1) {
                 action = NullAction.getInstance();
             } else {
-                action = initialActions.get(0);
+                action = initialActions.get(i);
             }
-            initialStateData.put(TruePrecondition.getInstance(),
-                    new Pair<>(initialStates.get(0), action));
-        } else {
-            for (int i = 0; i < initialStates.size(); i++) {
-                final S initialState = initialStates.get(i);
-                final Action action;
-                final Precondition precondition;
-                if (Objects.isNull(initialActions)
-                        || initialActions.size() < i + 1) {
-                    action = NullAction.getInstance();
-                } else {
-                    action = initialActions.get(i);
-                }
-                if (Objects.isNull(initialPreconditions)
-                        || initialPreconditions.size() < i + 1) {
-                    precondition = TruePrecondition.getInstance();
-                } else {
-                    precondition = initialPreconditions.get(i);
-                }
-                initialStateData.put(precondition, new Pair<>(initialState,
-                        action));
+            if (Objects.isNull(initialPreconditions)
+                    || initialPreconditions.size() < i + 1) {
+                precondition = TruePrecondition.getInstance();
+            } else {
+                precondition = initialPreconditions.get(i);
             }
+            initialStateData.put(precondition, new Pair<>(initialState,
+                    action));
         }
     }
 
@@ -476,23 +507,19 @@ public final class Automaton<E extends Enum, S extends Enum> {
         currentState = state;
         final Set<E> oldEnableEvents = new HashSet<>(events.size());
         dataStructure.keySet().stream()
-                .filter((pair) -> (pair.getSecond().equals(oldState)))
-                .forEachOrdered((pair) -> {
-                    oldEnableEvents.add(pair.getFirst());
-                });
+                .filter((Pair<E, S> pair) -> (pair.getSecond().equals(oldState)))
+                .forEachOrdered((Pair<E, S> pair) -> oldEnableEvents.add(pair.getFirst()));
 
         final Set<E> enableEvents = new HashSet<>(events.size());
         dataStructure.keySet().stream().
-                filter((pair) -> (pair.getSecond().equals(currentState))).
-                forEachOrdered((pair) -> {
-                    enableEvents.add(pair.getFirst());
-                });
+                filter((Pair<E, S> pair) -> (pair.getSecond().equals(currentState))).
+                forEachOrdered((Pair<E, S> pair) -> enableEvents.add(pair.getFirst()));
         support.firePropertyChange(STATE_PROPERTY, oldState, currentState);
-        events.forEach((anyEvent) -> {
-            support.firePropertyChange(anyEvent.toString() + ENABLED_SUFFIX,
-                    !enableEvents.contains(anyEvent), enableEvents.contains(
-                    anyEvent));
-        });
+        events.forEach((E anyEvent)
+                -> support.firePropertyChange(anyEvent.toString() + ENABLED_SUFFIX,
+                        !enableEvents.contains(anyEvent), enableEvents.contains(
+                        anyEvent))
+        );
     }
 
     /**
@@ -506,7 +533,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             return false;
         }
         return (dataStructure.keySet().stream()
-                .anyMatch((pair) -> (currentState.equals(pair.getSecond())
+                .anyMatch((Pair<E, S> pair) -> (currentState.equals(pair.getSecond())
                 && pair.getFirst().equals(event))));
     }
 
@@ -711,8 +738,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         for (S state : states) {
             toString = dataStructure.
                     entrySet().stream()
-                    .filter((entry) -> (entry.getKey().second.equals(state)))
-                    .map((entry)
+                    .filter((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
+                            -> (entry.getKey().second.equals(state)))
+                    .map((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
                             -> state
                     + "=>" + entry.getKey().first
                     + "=>" + entry.getValue().values()
