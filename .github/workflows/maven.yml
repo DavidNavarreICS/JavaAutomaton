@@ -44,4 +44,6 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Sonar with Maven
       run: mvn verify sonar:sonar --file pom.xml
+    - name: Check Licences
+      run: mvn apache-rat:check --file pom.xml
 
