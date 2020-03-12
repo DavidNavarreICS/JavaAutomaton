@@ -15,6 +15,7 @@
  */
 package fr.irit.ics.jautomaton;
 
+import fr.irit.ics.jautomaton.utils.Pair;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -585,6 +586,24 @@ public final class Automaton<E extends Enum, S extends Enum> {
         support.removePropertyChangeListener(propertyName, listener);
     }
 
+    @Override
+    public String toString() {
+        String toString = "Initial State: " + initialStateData.values() + "\n";
+        for (S state : states) {
+            toString = dataStructure.
+                    entrySet().stream()
+                    .filter((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
+                            -> (entry.getKey().getSecond().equals(state)))
+                    .map((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
+                            -> state
+                    + "=>" + entry.getKey().getFirst()
+                    + "=>" + entry.getValue().values()
+                    + "\n")
+                    .reduce(toString, String::concat);
+        }
+        return toString;
+    }
+
     /**
      * An action object that does nothing.
      */
@@ -647,105 +666,5 @@ public final class Automaton<E extends Enum, S extends Enum> {
         public boolean isVerified(final Object... parameters) {
             return true;
         }
-    }
-
-    /**
-     * Supports the creation of typed pair of objects.
-     *
-     * @param <E1> the type of the first object of the pair
-     * @param <E2> the type of the second object of the pair
-     */
-    private class Pair<E1, E2> {
-
-        /**
-         * Used to compute the hashcode.
-         */
-        private static final int HASHCODE_MODIFIER = 53;
-        /**
-         * Used to compute the hashcode.
-         */
-        private static final int HASHCODE_BASE = 5;
-        /**
-         * The first object.
-         */
-        private final E1 first;
-        /**
-         * The second object.
-         */
-        private final E2 second;
-
-        /**
-         * Build a typed pair of two objects.
-         *
-         * @param aFirstObject the first object
-         * @param aSecondObject the second object
-         */
-        Pair(final E1 aFirstObject, final E2 aSecondObject) {
-            this.first = aFirstObject;
-            this.second = aSecondObject;
-        }
-
-        /**
-         * Provides the first object of the pair.
-         *
-         * @return the first object
-         */
-        public E1 getFirst() {
-            return first;
-        }
-
-        /**
-         * Provides the second object of the pair.
-         *
-         * @return the second object
-         */
-        public E2 getSecond() {
-            return second;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = HASHCODE_BASE;
-            hash = HASHCODE_MODIFIER * hash + Objects.hashCode(this.first);
-            hash = HASHCODE_MODIFIER * hash + Objects.hashCode(this.second);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Pair<?, ?> other = (Pair<?, ?>) obj;
-            return (Objects.equals(this.first, other.first)
-                    && Objects.equals(this.second, other.second));
-        }
-
-        @Override
-        public String toString() {
-            return "Pair{" + "<" + first + ", " + second + ">}";
-        }
-
-    }
-
-    @Override
-    public String toString() {
-        String toString = "Initial State: " + initialStateData.values() + "\n";
-        for (S state : states) {
-            toString = dataStructure.
-                    entrySet().stream()
-                    .filter((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
-                            -> (entry.getKey().second.equals(state)))
-                    .map((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
-                            -> state
-                    + "=>" + entry.getKey().first
-                    + "=>" + entry.getValue().values()
-                    + "\n")
-                    .reduce(toString, String::concat);
-        }
-        return toString;
     }
 }
