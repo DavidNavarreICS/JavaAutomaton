@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -97,10 +98,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public Automaton(final Set<E> theEvents, final Set<S> theStates) {
         if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
+            LOG.log(Level.SEVERE, "The set of Events cannot be empty");
             throw new IllegalArgumentException(
                     "The set of Events cannot be empty");
         }
         if (Objects.isNull(theStates) || theStates.isEmpty()) {
+            LOG.log(Level.SEVERE, "The set of States cannot be empty");
             throw new IllegalArgumentException(
                     "The set of States cannot be empty");
         }
@@ -139,6 +142,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
             }
         }
         if (!foundState) {
+            LOG.log(
+                    Level.SEVERE,
+                    "No state change possible with parameters {0} for event {1} from state {2}",
+                    new Object[]{Arrays.deepToString(parameters), event, currentState});
             throw new IllegalArgumentException(
                     "No state change possible with parameters "
                     + Arrays.deepToString(parameters)
@@ -160,6 +167,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         if (dataStructure.containsKey(key)) {
             tryStateChange(event, dataStructure.get(key), parameters);
         } else {
+            LOG.log(Level.SEVERE,
+                    "Event {0} is not allowed in state {1}",
+                    new Object[]{event, currentState});
             throw new IllegalStateException(
                     "Event " + event
                     + " is not allowed in state " + currentState);
@@ -173,10 +183,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void createRegister(final String name) {
         if (registers.containsKey(name)) {
+            LOG.log(Level.SEVERE, "Register {0} already exists.", name);
             throw new IllegalArgumentException(
                     "Register " + name + " already exists.");
         } else if (Objects.isNull(name) || !name.matches(
                 "[a-zA-Z]([a-zA-Z0-9_])*")) {
+            LOG.log(Level.SEVERE,
+                    "< {0} > is not a correct name for a register.\nName must fit [a-zA-Z]([a-zA-Z0-9_])*",
+                    name);
             throw new IllegalArgumentException(
                     "< " + name + " > is not a correct name for a register."
                     + "\nName must fit [a-zA-Z]([a-zA-Z0-9_])*");
@@ -194,6 +208,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public <T> T getRegisterValue(final String name, final Class<T> type) {
         if (!registers.containsKey(name)) {
+            LOG.log(Level.SEVERE, "Register {0} does not exist.", name);
             throw new IllegalArgumentException(
                     "Register " + name + " does not exist.");
         }
@@ -208,6 +223,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void setRegisterValue(final String name, final Object value) {
         if (!registers.containsKey(name)) {
+            LOG.log(Level.SEVERE, "Register {0} does not exist.", name);
             throw new IllegalArgumentException(
                     "Register " + name + " does not exist.");
         }
@@ -236,6 +252,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
         final List<S> initialStates = new ArrayList<>(1);
         final List<Action> initialActions = new ArrayList<>(1);
         if (Objects.isNull(initialState)) {
+            LOG.log(Level.SEVERE, "The initial state cannot be null");
             throw new IllegalArgumentException(
                     "The initial state cannot be null");
         }
@@ -263,6 +280,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
         if (Objects.isNull(initialStates) || initialStates.isEmpty()) {
+            LOG.log(Level.SEVERE, "The set of initial states cannot be empty");
             throw new IllegalArgumentException(
                     "The set of initial states cannot be empty");
         }
