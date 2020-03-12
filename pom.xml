@@ -26,6 +26,11 @@
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.13</version>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -37,11 +42,6 @@
                 <configuration>
                     <configLocation>config/sun_checks.xml</configLocation>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.13</version>
             </plugin>
         </plugins>
     </reporting>

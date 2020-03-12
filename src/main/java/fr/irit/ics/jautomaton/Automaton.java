@@ -100,11 +100,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Error message used when the set of states is empty.
      */
-    private static final String ERROR_SET_OF__STATES_CANNOT_BE_EMPTY = "The set of States cannot be empty";
+    private static final String ERROR_SET_OF_STATES_CANNOT_BE_EMPTY = "The set of States cannot be empty";
     /**
      * Error message used when the set of events is empty.
      */
-    private static final String ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY = "The set of Events cannot be empty";
+    private static final String ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY = "The set of Events cannot be empty";
     /**
      * String used as a prefix for any state in any message.
      */
@@ -120,7 +120,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * String that provides an error message.
      */
-    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY = "The set of initial states cannot be empty";
+    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY
+            = "The set of initial states cannot be empty";
     /**
      * String that provides an error message.
      */
@@ -135,14 +136,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public Automaton(final Set<E> theEvents, final Set<S> theStates) {
         if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
-            LOG.log(Level.SEVERE, ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY);
+            LOG.log(Level.SEVERE, ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    ERROR_SET_OF__EVENTS_CANNOT_BE_EMPTY);
+                    ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
         }
         if (Objects.isNull(theStates) || theStates.isEmpty()) {
-            LOG.log(Level.SEVERE, ERROR_SET_OF__STATES_CANNOT_BE_EMPTY);
+            LOG.log(Level.SEVERE, ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    ERROR_SET_OF__STATES_CANNOT_BE_EMPTY);
+                    ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
         }
 
         this.events = Collections.unmodifiableSet(theEvents);
@@ -409,7 +410,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param initialActions a set of actions
      * @param initialPreconditions a set of precondition
      */
-    private void registerMultipleStatesInitilization(final List<S> initialStates, final List<Action> initialActions, final List<Precondition> initialPreconditions) {
+    private void registerMultipleStatesInitilization(
+            final List<S> initialStates,
+            final List<Action> initialActions,
+            final List<Precondition> initialPreconditions) {
         for (int i = 0; i < initialStates.size(); i++) {
             final S initialState = initialStates.get(i);
             final Action action;
