@@ -22,7 +22,7 @@ import java.util.Objects;
  *
  * @param <E1> the type of the first object of the pair
  * @param <E2> the type of the second object of the pair
- * @author David
+ * @author David Navarre
  */
 public final class Pair<E1, E2> {
 
