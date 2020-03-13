@@ -52,7 +52,7 @@ public class PairTest {
     @Test
     public void testGetSecondIsSame() {
         Pair<Integer, Integer> aPair = getNewPair();
-        Integer result = aPair.getFirst();
+        Integer result = aPair.getSecond();
         Integer expected = DEFAULT_SECOND_ELEMENT;
         Assert.assertEquals("getSecond must return the value used to build the pair", expected, result);
     }
