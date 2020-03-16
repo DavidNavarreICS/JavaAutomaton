@@ -131,11 +131,33 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListener_PropertyChangeListener() {
+    public void testAddPropertyChangeListener_AllowedE1() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
-        automaton.addPropertyChangeListener(listener);
-        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners();
+        automaton.addPropertyChangeListener(Event.E1.toString() + Automaton.ENABLED_SUFFIX, listener);
+        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Event.E1.toString() + Automaton.ENABLED_SUFFIX);
+        final int expectedSize = 1;
+        Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
+    }
+
+    @Test
+    public void testAddPropertyChangeListener_AllowedE2() {
+        final Automaton<Event, State> automaton = getAutomaton();
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(Event.E2.toString() + Automaton.ENABLED_SUFFIX, listener);
+        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Event.E2.toString() + Automaton.ENABLED_SUFFIX);
+        final int expectedSize = 1;
+        Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
+    }
+
+    @Test
+    public void testAddPropertyChangeListener_AllowedState() {
+        final Automaton<Event, State> automaton = getAutomaton();
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
+        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Automaton.STATE_PROPERTY);
         final int expectedSize = 1;
         Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
         Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
