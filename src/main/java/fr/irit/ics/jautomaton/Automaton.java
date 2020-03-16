@@ -236,7 +236,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 entrySet()) {
             LOG.log(Level.INFO, "Trying precondition: {0}", entry.getKey());
             if (entry.getKey().isVerified(parameters)) {
-                LOG.log(Level.INFO, "Precondition: {0} is verified", entry.getKey());
+                LOG.log(Level.INFO,
+                        "Precondition: {0} is verified, going to state {1}",
+                        new Object[]{entry.getKey(), entry.getValue().getFirst()});
                 goToState(entry.getValue().getFirst());
                 entry.getValue().getSecond().execute(parameters);
                 foundState = true;
@@ -381,8 +383,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
                     ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
         }
         if (initialStates.size() == 1) {
+            LOG.log(Level.INFO, "Register single state initilization");
             registerSingleStateInitialization(initialActions, initialStates);
         } else {
+            LOG.log(Level.INFO, "Register multiple state initilization");
             registerMultipleStatesInitilization(initialStates, initialActions, initialPreconditions);
         }
     }
@@ -502,6 +506,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * actions.
      */
     public void initialize(final Object... parameters) {
+        LOG.log(Level.INFO, "Initializing with parameters: {0}", new Object[]{parameters});
         tryStateChange(null, initialStateData, parameters);
     }
 
