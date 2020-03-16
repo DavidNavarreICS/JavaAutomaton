@@ -550,6 +550,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void addPropertyChangeListener(
             final PropertyChangeListener listener) {
+        checkListener(listener);
         support.addPropertyChangeListener(listener);
     }
 
@@ -558,10 +559,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
      *
      * @param listener the new listener to be removed
      * @see
-     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)      *
+     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)
+     * *
      */
     public void removePropertyChangeListener(
             final PropertyChangeListener listener) {
+        checkListener(listener);
         support.removePropertyChangeListener(listener);
     }
 
@@ -577,6 +580,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public void addPropertyChangeListener(
             final String propertyName,
             final PropertyChangeListener listener) {
+        checkPropertyName(propertyName);
+        checkListener(listener);
         support.addPropertyChangeListener(propertyName, listener);
     }
 
@@ -592,6 +597,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public void removePropertyChangeListener(
             final String propertyName,
             final PropertyChangeListener listener) {
+        checkPropertyName(propertyName);
+        checkListener(listener);
         support.removePropertyChangeListener(propertyName, listener);
     }
 
@@ -614,6 +621,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
      */
     public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+        checkPropertyName(propertyName);
         return support.getPropertyChangeListeners(propertyName);
     }
 
@@ -696,6 +704,36 @@ public final class Automaton<E extends Enum, S extends Enum> {
         @Override
         public boolean isVerified(final Object... parameters) {
             return true;
+        }
+    }
+
+    /**
+     * Verify if the property listened refers to a state change of to an event
+     * enabling change.
+     *
+     * @param propertyName the property to listen to
+     */
+    private void checkPropertyName(String propertyName) {
+        boolean isCorrect = STATE_PROPERTY.equals(propertyName);
+        for (E event : events) {
+            final String expected = event.toString() + ENABLED_SUFFIX;
+            if (expected.equals(propertyName)) {
+                isCorrect = true;
+            }
+        }
+        if (!isCorrect) {
+            throw new IllegalArgumentException("The name of the property to listen to should be 'state' or <anyEvent>_enabled");
+        }
+    }
+
+    /**
+     * Verifies that the provided listener is not null.
+     *
+     * @param listener the concerned listener
+     */
+    private void checkListener(PropertyChangeListener listener) {
+        if (Objects.isNull(listener)) {
+            throw new IllegalArgumentException("The added listener cannot be null");
         }
     }
 }

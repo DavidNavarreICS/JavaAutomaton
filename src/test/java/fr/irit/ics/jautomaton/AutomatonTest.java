@@ -35,6 +35,7 @@ public class AutomatonTest {
     private enum Event {
         E1, E2
     }
+    private final static String INCORRECT_PROPERTY_NAME = "foo";
 
     public AutomatonTest() {
     }
@@ -132,24 +133,24 @@ public class AutomatonTest {
     @Test
     public void testAddPropertyChangeListener_PropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
-        final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
-        automaton.addPropertyChangeListener(statePropertyListener);
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(listener);
         final PropertyChangeListener[] result = automaton.getPropertyChangeListeners();
         final int expectedSize = 1;
         Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
-        Assert.assertEquals("Listener list should contain the added listener", statePropertyListener, result[0]);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
     }
 
     @Test
     public void testRemovePropertyChangeListener_PropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
-        final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
-        automaton.addPropertyChangeListener(statePropertyListener);
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(listener);
         PropertyChangeListener[] result = automaton.getPropertyChangeListeners();
         int expectedSize = 1;
         Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
-        Assert.assertEquals("Listener list should contain the added listener", statePropertyListener, result[0]);
-        automaton.removePropertyChangeListener(statePropertyListener);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
+        automaton.removePropertyChangeListener(listener);
         result = automaton.getPropertyChangeListeners();
         expectedSize = 0;
         Assert.assertEquals("Listener list should be empty", expectedSize, result.length);
@@ -158,27 +159,40 @@ public class AutomatonTest {
     @Test
     public void testAddPropertyChangeListener_String_PropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
-        final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
-        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, statePropertyListener);
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
         final PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Automaton.STATE_PROPERTY);
         final int expectedSize = 1;
         Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
-        Assert.assertEquals("Listener list should contain the added listener", statePropertyListener, result[0]);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
     }
 
     @Test
     public void testRemovePropertyChangeListener_String_PropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
-        final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
-        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, statePropertyListener);
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
         PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Automaton.STATE_PROPERTY);
         int expectedSize = 1;
         Assert.assertEquals("Listener list should contain only one item", expectedSize, result.length);
-        Assert.assertEquals("Listener list should contain the added listener", statePropertyListener, result[0]);
-        automaton.removePropertyChangeListener(Automaton.STATE_PROPERTY, statePropertyListener);
+        Assert.assertEquals("Listener list should contain the added listener", listener, result[0]);
+        automaton.removePropertyChangeListener(Automaton.STATE_PROPERTY, listener);
         result = automaton.getPropertyChangeListeners(Automaton.STATE_PROPERTY);
         expectedSize = 0;
         Assert.assertEquals("Listener list should be empty", expectedSize, result.length);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPropertyChangeListener_StringNotAllowed() {
+        final Automaton<Event, State> automaton = getAutomaton();
+        final PropertyChangeListener listener = new FooListener();
+        automaton.addPropertyChangeListener(INCORRECT_PROPERTY_NAME, listener);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPropertyChangeListener_ListenerNull() {
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, null);
     }
 
     @Test
@@ -242,4 +256,11 @@ public class AutomatonTest {
             newValue = evt.getNewValue();
         }
     };
+
+    private class FooListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+        }
+    }
 }
