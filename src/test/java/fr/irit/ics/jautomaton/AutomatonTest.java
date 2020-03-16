@@ -391,7 +391,7 @@ public class AutomatonTest {
         public boolean isVerified(Object... parameters) {
             Boolean value = (Boolean) parameters[0];
             if (value == condition) {
-                System.out.println(toString());
+                //System.out.println(toString());
             }
 
             return value == condition;
