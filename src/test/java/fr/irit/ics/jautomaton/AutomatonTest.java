@@ -17,7 +17,10 @@ package fr.irit.ics.jautomaton;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,6 +39,12 @@ public class AutomatonTest {
         E1, E2
     }
     private final static String INCORRECT_PROPERTY_NAME = "foo";
+    private final static String CORRECT_REGISTER_NAME = "a1";
+    private final static String INCORRECT_REGISTER_NAME = "!a1";
+    private final static ActionImpl actionImpl1 = new ActionImpl(1);
+    private final static ActionImpl actionImpl2 = new ActionImpl(2);
+    private final static PreconditionImpl preconditionImpl1 = new PreconditionImpl(Boolean.TRUE);
+    private final static PreconditionImpl preconditionImpl2 = new PreconditionImpl(Boolean.FALSE);
 
     public AutomatonTest() {
     }
@@ -65,33 +74,69 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testCreateRegister() {
+    public void testCreateRegister_CorrectName() {
         final Automaton<Event, State> automaton = getAutomaton();
+        automaton.createRegister(CORRECT_REGISTER_NAME);
+        final Integer value = 0;
+        automaton.setRegisterValue(CORRECT_REGISTER_NAME, value);
+        Integer result = automaton.getRegisterValue(CORRECT_REGISTER_NAME, Integer.class);
+        Assert.assertEquals("The register value should be the same as the one set", value, result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateRegister_IncorrectName() {
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.createRegister(INCORRECT_REGISTER_NAME);
     }
 
     @Test
-    public void testGetRegisterValue() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    public void testRegisterInitialization_SimpleState() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        automaton.registerInitialization(State.S1);
+        automaton.initialize();
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
     }
 
     @Test
-    public void testSetRegisterValue() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    public void testRegisterInitialization_SimpleStateWithAction() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        final ActionImpl actionImpl = new ActionImpl(0);
+        automaton.registerInitialization(State.S1, actionImpl);
+        Object[] parameters = new Object[]{0.0F, "FOO"};
+        automaton.initialize(parameters);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
+        Object receivedParameter = actionImpl.getExecutionParameters();
+        Assert.assertEquals("Initial parameters lost during initialization", parameters[0], receivedParameter);
     }
 
     @Test
-    public void testRegisterInitialization_GenericType() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1() {
+        final Automaton<Event, State> automaton = getAutomatonWithFullInitialization();
+        Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
+        automaton.initialize(parametersS1);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
+        Object receivedParameter = actionImpl1.getExecutionParameters();
+        Assert.assertEquals("Initial parameters lost during initialization", parametersS1[1], receivedParameter);
     }
 
     @Test
-    public void testRegisterInitialization_GenericType_Action() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch2() {
+        final Automaton<Event, State> automaton = getAutomatonWithFullInitialization();
+        Object[] parametersS2 = new Object[]{false, "FOO1", "FOO2"};
+        automaton.initialize(parametersS2);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S2", State.S2, result);
+        Object receivedParameter = actionImpl2.getExecutionParameters();
+        Assert.assertEquals("Initial parameters lost during initialization", parametersS2[2], receivedParameter);
     }
 
-    @Test
-    public void testRegisterInitialization_3args() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterInitialization_IncorrectState() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        automaton.registerInitialization(null);
     }
 
     @Test
@@ -261,6 +306,16 @@ public class AutomatonTest {
         return automaton;
     }
 
+    private Automaton<Event, State> getAutomatonWithFullInitialization() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
+        final List<Action> actions = new ArrayList<>(Arrays.asList(actionImpl1, actionImpl2));
+        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(preconditionImpl1, preconditionImpl2));
+        automaton.registerInitialization(states, actions, preconditions);
+
+        return automaton;
+    }
+
     private class StatePropertyChangeListener implements PropertyChangeListener {
 
         private Object newValue;
@@ -302,6 +357,49 @@ public class AutomatonTest {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
+        }
+    }
+
+    private static class ActionImpl implements Action {
+
+        private Object executionParameter;
+        private final int index;
+
+        public ActionImpl(int index) {
+            this.index = index;
+        }
+
+        public Object getExecutionParameters() {
+            return executionParameter;
+        }
+
+        @Override
+        public void execute(Object... parameters) {
+            executionParameter = parameters[index];
+        }
+    }
+
+    private static class PreconditionImpl implements Precondition {
+
+        private final Boolean condition;
+
+        public PreconditionImpl(Boolean condition) {
+            this.condition = condition;
+        }
+
+        @Override
+        public boolean isVerified(Object... parameters) {
+            Boolean value = (Boolean) parameters[0];
+            if (value == condition) {
+                System.out.println(toString());
+            }
+
+            return value == condition;
+        }
+
+        @Override
+        public String toString() {
+            return "PreconditionImpl{" + "condition=" + condition + '}';
         }
     }
 }
