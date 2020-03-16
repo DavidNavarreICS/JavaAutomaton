@@ -234,7 +234,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         boolean foundState = false;
         for (Map.Entry<Precondition, Pair<S, Action>> entry : futurState.
                 entrySet()) {
+            LOG.log(Level.INFO, "Trying precondition: {0}", entry.getKey());
             if (entry.getKey().isVerified(parameters)) {
+                LOG.log(Level.INFO, "Precondition: {0} is verified", entry.getKey());
                 goToState(entry.getValue().getFirst());
                 entry.getValue().getSecond().execute(parameters);
                 foundState = true;
