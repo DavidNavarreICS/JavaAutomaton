@@ -41,9 +41,9 @@ import java.util.regex.Pattern;
  * <li>Actions on transitions</li>
  * </ul>
  *
- * @author navarre
- * @param <E>
- * @param <S>
+ * @author David Navarre
+ * @param <E> the enumeration set of accepted Event values
+ * @param <S> the enumeration set of accepted State values
  */
 public final class Automaton<E extends Enum, S extends Enum> {
 
@@ -146,7 +146,6 @@ public final class Automaton<E extends Enum, S extends Enum> {
             throw new IllegalArgumentException(
                     ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
         }
-
         this.events = Collections.unmodifiableSet(theEvents);
         this.states = Collections.unmodifiableSet(theStates);
         dataStructure = new HashMap<>();
@@ -546,6 +545,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Registers a listener of any changes within the automaton.
      *
      * @param listener the new listener to be added
+     * @see
+     * java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(
             final PropertyChangeListener listener) {
@@ -556,6 +557,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Removes a listener.
      *
      * @param listener the new listener to be removed
+     * @see
+     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)      *
      */
     public void removePropertyChangeListener(
             final PropertyChangeListener listener) {
@@ -567,6 +570,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      *
      * @param propertyName the name of the property to listen to
      * @param listener the new listener to be added
+     * @see
+     * java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
+     * java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(
             final String propertyName,
@@ -575,15 +581,40 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Removes a listener.
+     * Removes a listener for a particular property.
      *
      * @param propertyName the name of the property that was listened to
      * @param listener the new listener to be removed
+     * @see
+     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
+     * java.beans.PropertyChangeListener)
      */
     public void removePropertyChangeListener(
             final String propertyName,
             final PropertyChangeListener listener) {
         support.removePropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     * Provides the set of listeners of the automaton properties.
+     *
+     * @return the set of listeners
+     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners()
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners() {
+        return support.getPropertyChangeListeners();
+    }
+
+    /**
+     * Provides the set of listeners of an automaton particular property.
+     *
+     * @param propertyName the name of the listened property
+     * @return the set of listeners
+     * @see
+     * java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+        return support.getPropertyChangeListeners(propertyName);
     }
 
     @Override
