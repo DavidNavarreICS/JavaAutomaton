@@ -41,8 +41,27 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAcceptEvent() {
-        final Automaton<Event, State> automaton = getAutomaton();
+    public void testAcceptEventIsCorrect() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        automaton.initialize();
+        automaton.acceptEvent(Event.E1);
+        State finalState = automaton.getCurrentState();
+        State expected = State.S2;
+        Assert.assertEquals("The final state should be S2", expected, finalState);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAcceptEventE2Incorrect() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        automaton.initialize();
+        automaton.acceptEvent(Event.E2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAcceptEvent_EventNullNotAllowed() {
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        automaton.initialize();
+        automaton.acceptEvent(null);
     }
 
     @Test

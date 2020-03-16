@@ -258,6 +258,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param parameters the parameters of both the precondition and the action
      */
     public void acceptEvent(final E event, final Object... parameters) {
+        if (Objects.isNull(event)) {
+            throw new IllegalArgumentException("Event used to fire a transition cannot be null");
+        }
         Pair<E, S> key = new Pair<>(event, currentState);
         if (dataStructure.containsKey(key)) {
             tryStateChange(event, dataStructure.get(key), parameters);
@@ -641,6 +644,15 @@ public final class Automaton<E extends Enum, S extends Enum> {
                     .reduce(toString, String::concat);
         }
         return toString;
+    }
+
+    /**
+     * Provides the state in which the automaton is.
+     *
+     * @return the current state
+     */
+    public S getCurrentState() {
+        return currentState;
     }
 
     /**
