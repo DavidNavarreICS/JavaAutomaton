@@ -19,6 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -188,6 +189,21 @@ public class AutomatonTest {
     }
 
     @Test
+    public void testRegisterInitialization_SimpleStateWithEmptyAction() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithNullAction");
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        final List<State> states = new ArrayList<>(1);
+        states.add(State.S1);
+        final List<Action> actions = Collections.EMPTY_LIST;
+        final List<Precondition> preconditions = Collections.EMPTY_LIST;
+        automaton.registerInitialization(states, actions, preconditions);
+        Object[] parameters = new Object[]{0.0F, "FOO"};
+        automaton.initialize(parameters);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
+    }
+
+    @Test
     public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1() {
         LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1");
         final Automaton<Event, State> automaton = getFullAutomaton();
@@ -207,6 +223,21 @@ public class AutomatonTest {
         Assert.assertEquals("The initial state should be the one registered as an initialization: S2", State.S2, result);
         Object receivedParameter = a2.getExecutionParameters();
         Assert.assertEquals("Initial parameters lost during initialization", parametersS2[2], receivedParameter);
+    }
+
+    @Test
+    public void testRegisterInitialization_MultipleStateWithFewActionsAndFewPreconditions() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithFewActionsAndFewPreconditions");
+        a1.reinit();
+        a2.reinit();
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
+        final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
+        final List<Action> actions = new ArrayList<>(Arrays.asList(a1));
+        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p1));
+        automaton.registerInitialization(states, actions, preconditions);
+        automaton.initialize(parametersS2);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S2, result);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -273,6 +304,44 @@ public class AutomatonTest {
         Assert.assertEquals("The initial state should be the one registered as an initialization: S3", State.S3, result);
         Object receivedParameter = a2.getExecutionParameters();
         Assert.assertEquals("Initial parameters lost during transition", parametersS2[2], receivedParameter);
+    }
+
+    @Test
+    public void testEnabledEvent_E1IsEnabled() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsEnabled");
+        final Automaton<Event, State> automaton = getAutomaton();
+        a1.reinit();
+        a2.reinit();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        automaton.initialize();
+        Boolean isE1Enabled = automaton.isEventEnabled(Event.E1);
+        Assert.assertTrue("E1 should be enabled", isE1Enabled);
+    }
+
+    @Test
+    public void testEnabledEvent_E1IsNotEnabledWhileNotInitialized() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsNotEnabledWhileNotInitialized");
+        final Automaton<Event, State> automaton = getAutomaton();
+        a1.reinit();
+        a2.reinit();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        Boolean isE1Enabled = automaton.isEventEnabled(Event.E1);
+        Assert.assertFalse("E1 should not be enabled", isE1Enabled);
+    }
+
+    @Test
+    public void testEnabledEvent_E2IsNotEnabled() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E2IsNotEnabled");
+        final Automaton<Event, State> automaton = getAutomaton();
+        a1.reinit();
+        a2.reinit();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        automaton.initialize();
+        Boolean isE2Enabled = automaton.isEventEnabled(Event.E2);
+        Assert.assertFalse("E2 should not be enabled", isE2Enabled);
     }
 
     @Test
@@ -407,6 +476,17 @@ public class AutomatonTest {
     public void testToString() {
         LOG.log(Level.INFO, "################ testToString");
         final Automaton<Event, State> automaton = getAutomaton();
+        String result = automaton.toString();
+        Boolean isNull = Objects.isNull(result);
+        Boolean isEmpty = result.isEmpty();
+        Assert.assertFalse("toString cannot be null", isNull);
+        Assert.assertFalse("toString cannot be empty", isEmpty);
+    }
+
+    @Test
+    public void testToStringForComplexAutomaton() {
+        LOG.log(Level.INFO, "################ testToStringForComplexAutomaton");
+        final Automaton<Event, State> automaton = getFullAutomaton();
         String result = automaton.toString();
         Boolean isNull = Objects.isNull(result);
         Boolean isEmpty = result.isEmpty();
