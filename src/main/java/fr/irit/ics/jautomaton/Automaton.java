@@ -433,8 +433,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final S initialState = initialStates.get(i);
             final Action action;
             final Precondition precondition;
-            if (Objects.isNull(initialActions)
-                    || initialActions.size() < i + 1) {
+            if (Objects.isNull(initialActions)) {
+                action = NullAction.getInstance();
+            } else if (initialActions.size() < i + 1) {
                 action = NullAction.getInstance();
             } else {
                 action = initialActions.get(i);
