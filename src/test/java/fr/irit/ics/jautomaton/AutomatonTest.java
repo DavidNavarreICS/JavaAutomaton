@@ -176,6 +176,18 @@ public class AutomatonTest {
     }
 
     @Test
+    public void testRegisterInitialization_SimpleStateWithNullAction() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithNullAction");
+        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
+        final ActionImpl actionImpl = null;
+        automaton.registerInitialization(State.S1, actionImpl);
+        Object[] parameters = new Object[]{0.0F, "FOO"};
+        automaton.initialize(parameters);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
+    }
+
+    @Test
     public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1() {
         LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1");
         final Automaton<Event, State> automaton = getFullAutomaton();
@@ -202,6 +214,20 @@ public class AutomatonTest {
         LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionNeverReachable");
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.initialize(parametersS1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionNullSetOfState() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionNullSetOfState");
+        final Automaton<Event, State> automaton = getFooAutomaton();
+        automaton.registerInitialization(null, null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionEmptySetOfState() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionEmptySetOfState");
+        final Automaton<Event, State> automaton = getFooAutomaton();
+        automaton.registerInitialization(new ArrayList<State>(0), null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
