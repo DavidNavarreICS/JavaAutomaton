@@ -237,7 +237,37 @@ public class AutomatonTest {
         automaton.registerInitialization(states, actions, preconditions);
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
-        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S2, result);
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S2", State.S2, result);
+    }
+
+    @Test
+    public void testRegisterInitialization_MultipleStateWithOneStateNullActionsAndNullPreconditions() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithOneStateNullActionsAndNullPreconditions");
+        a1.reinit();
+        a2.reinit();
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
+        final List<State> states = new ArrayList<>(Arrays.asList(State.S1));
+        final List<Action> actions = null;
+        final List<Precondition> preconditions = null;
+        automaton.registerInitialization(states, actions, preconditions);
+        automaton.initialize(parametersS2);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
+    }
+
+    @Test
+    public void testRegisterInitialization_MultipleStateWithOneStateEmptyActionsAndEmptyPreconditions() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithOneStateEmptyActionsAndEmptyPreconditions");
+        a1.reinit();
+        a2.reinit();
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
+        final List<State> states = new ArrayList<>(Arrays.asList(State.S1));
+        final List<Action> actions = Collections.emptyList();
+        final List<Precondition> preconditions = Collections.emptyList();
+        automaton.registerInitialization(states, actions, preconditions);
+        automaton.initialize(parametersS2);
+        State result = automaton.getCurrentState();
+        Assert.assertEquals("The initial state should be the one registered as an initialization: S1", State.S1, result);
     }
 
     @Test(expected = IllegalArgumentException.class)
