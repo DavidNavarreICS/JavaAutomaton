@@ -15,15 +15,10 @@
  */
 package fr.irit.ics.jautomaton;
 
-import org.junit.Test;
-
 /**
  *
  * @author navarre
  */
 public class AutomatonWithPreconditionTest {
 
-    @Test
-    public void testAcceptEvent() {
-    }
 }

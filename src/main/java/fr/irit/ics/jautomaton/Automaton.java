@@ -136,6 +136,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param theStates must be set containing at least one state.
      */
     public Automaton(final Set<E> theEvents, final Set<S> theStates) {
+        LOG.log(Level.INFO, "Creating automaton with States={0}, Events={1}", new Object[]{theStates, theEvents});
         if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
             LOG.log(Level.SEVERE, ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
@@ -334,6 +335,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param initialState the initial state
      */
     public void registerInitialization(final S initialState) {
+        LOG.log(Level.INFO, "Register Initialization with: {0}", new Object[]{initialState});
         registerInitialization(initialState, NullAction.getInstance());
     }
 
@@ -347,6 +349,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void registerInitialization(final S initialState,
             final Action initialAction) {
+        LOG.log(Level.INFO, "Register Initialization with: {0}, {1}", new Object[]{initialState, initialAction});
         if (Objects.isNull(initialState)) {
             LOG.log(Level.SEVERE, ERROR_INITIAL_STATE_CANNOT_BE_NULL);
             throw new IllegalArgumentException(
@@ -377,16 +380,17 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<S> initialStates,
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
+        LOG.log(Level.INFO, "Register Initialization with: {0}, {1}, {2}", new Object[]{initialStates, initialPreconditions, initialActions});
         if (Objects.isNull(initialStates) || initialStates.isEmpty()) {
             LOG.log(Level.SEVERE, ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
                     ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
         }
         if (initialStates.size() == 1) {
-            LOG.log(Level.INFO, "Register single state initilization");
+            LOG.log(Level.INFO, "Register single state initilization: {0}", initialStates);
             registerSingleStateInitialization(initialActions, initialStates);
         } else {
-            LOG.log(Level.INFO, "Register multiple state initilization");
+            LOG.log(Level.INFO, "Register multiple state initilization: {0}", initialStates);
             registerMultipleStatesInitilization(initialStates, initialActions, initialPreconditions);
         }
     }
@@ -401,6 +405,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * list is used)
      */
     private void registerSingleStateInitialization(final List<Action> initialActions, final List<S> initialStates) {
+        LOG.log(Level.INFO, "Register single state initialisation with: {0}, {1}", new Object[]{initialActions, initialStates});
         final Action action;
         if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
             action = NullAction.getInstance();
@@ -423,6 +428,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<S> initialStates,
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
+        LOG.log(Level.INFO, "Register multiple state initialisation with: {0}, {1}, {2}", new Object[]{initialStates, initialActions, initialStates});
         for (int i = 0; i < initialStates.size(); i++) {
             final S initialState = initialStates.get(i);
             final Action action;

@@ -44,6 +44,10 @@ public class AutomatonTest {
     private final static String CORRECT_REGISTER_NAME = "a1";
     private final static String INCORRECT_REGISTER_NAME = "!a1";
     private static final Logger LOG = Logger.getLogger(AutomatonTest.class.getName());
+    private static final PreconditionImpl p1 = new PreconditionImpl(Boolean.TRUE);
+    private static final PreconditionImpl p2 = new PreconditionImpl(Boolean.FALSE);
+    private static final ActionImpl a1 = new ActionImpl(1);
+    private static final ActionImpl a2 = new ActionImpl(2);
 
     public AutomatonTest() {
     }
@@ -120,9 +124,7 @@ public class AutomatonTest {
     @Test
     public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1() {
         LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1");
-        final ActionImpl a1 = new ActionImpl(1);
-        final ActionImpl a2 = new ActionImpl(2);
-        final Automaton<Event, State> automaton = getAutomatonWithFullInitialization(a1, a2);
+        final Automaton<Event, State> automaton = getFullAutomaton();
         Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
         automaton.initialize(parametersS1);
         State result = automaton.getCurrentState();
@@ -134,9 +136,7 @@ public class AutomatonTest {
     @Test
     public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch2() {
         LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch2");
-        final ActionImpl a1 = new ActionImpl(1);
-        final ActionImpl a2 = new ActionImpl(2);
-        final Automaton<Event, State> automaton = getAutomatonWithFullInitialization(a1, a2);
+        final Automaton<Event, State> automaton = getFullAutomaton();
         Object[] parametersS2 = new Object[]{false, "FOO1", "FOO2"};
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
@@ -329,21 +329,24 @@ public class AutomatonTest {
     }
 
     private Automaton<Event, State> getAutomatonWithInitialState() {
-        final Automaton<Event, State> automaton = getAutomaton();
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         automaton.registerInitialization(State.S1);
+
+        return automaton;
+    }
+
+    private Automaton<Event, State> getAutomatonWithoutInitialState() {
+        final Automaton<Event, State> automaton = getAutomaton();
         automaton.registerTransition(State.S1, Event.E1, State.S2);
 
         return automaton;
     }
 
-    private Automaton<Event, State> getAutomatonWithFullInitialization(Action action1, Action action2) {
-        final Automaton<Event, State> automaton = getAutomatonWithInitialState();
-        final PreconditionImpl preconditionImpl1 = new PreconditionImpl(Boolean.TRUE);
-        final PreconditionImpl preconditionImpl2 = new PreconditionImpl(Boolean.FALSE);
-
+    private Automaton<Event, State> getFullAutomaton() {
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
-        final List<Action> actions = new ArrayList<>(Arrays.asList(action1, action2));
-        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(preconditionImpl1, preconditionImpl2));
+        final List<Action> actions = new ArrayList<>(Arrays.asList(a1, a2));
+        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p1, p2));
         automaton.registerInitialization(states, actions, preconditions);
 
         return automaton;
@@ -386,7 +389,7 @@ public class AutomatonTest {
         }
     };
 
-    private class FooListener implements PropertyChangeListener {
+    private static class FooListener implements PropertyChangeListener {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -409,6 +412,10 @@ public class AutomatonTest {
         @Override
         public void execute(Object... parameters) {
             executionParameter = parameters[index];
+        }
+
+        public void reinit() {
+            executionParameter = null;
         }
     }
 
