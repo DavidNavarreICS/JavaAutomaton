@@ -352,6 +352,18 @@ public class AutomatonTest {
     }
 
     @Test
+    public void testEnabledEvent_E1IsNotEnabledWhileNotInitialized() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsNotEnabledWhileNotInitialized");
+        final Automaton<Event, State> automaton = getAutomaton();
+        a1.reinit();
+        a2.reinit();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        Boolean isE1Enabled = automaton.isEventEnabled(Event.E1);
+        Assert.assertFalse("E1 should not be enabled", isE1Enabled);
+    }
+
+    @Test
     public void testEnabledEvent_E1IsEnabled() {
         LOG.log(Level.INFO, "################ testEnabledEvent_E1IsEnabled");
         final Automaton<Event, State> automaton = getAutomaton();
@@ -365,18 +377,6 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E1IsNotEnabledWhileNotInitialized() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsNotEnabledWhileNotInitialized");
-        final Automaton<Event, State> automaton = getAutomaton();
-        a1.reinit();
-        a2.reinit();
-        automaton.registerInitialization(State.S1);
-        automaton.registerTransition(State.S1, Event.E1, State.S2);
-        Boolean isE1Enabled = automaton.isEventEnabled(Event.E1);
-        Assert.assertFalse("E1 should not be enabled", isE1Enabled);
-    }
-
-    @Test
     public void testEnabledEvent_E2IsNotEnabled() {
         LOG.log(Level.INFO, "################ testEnabledEvent_E2IsNotEnabled");
         final Automaton<Event, State> automaton = getAutomaton();
@@ -387,6 +387,32 @@ public class AutomatonTest {
         automaton.initialize();
         Boolean isE2Enabled = automaton.isEventEnabled(Event.E2);
         Assert.assertFalse("E2 should not be enabled", isE2Enabled);
+    }
+
+    @Test
+    public void testEnabledEvent_E2IsNotEnabledInS1() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E2IsNotEnabled");
+        final Automaton<Event, State> automaton = getAutomaton();
+        a1.reinit();
+        a2.reinit();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        automaton.registerTransition(State.S2, Event.E2, State.S1);
+        automaton.initialize();
+        Boolean isE2Enabled = automaton.isEventEnabled(Event.E2);
+        Assert.assertFalse("E2 should not be enabled", isE2Enabled);
+    }
+
+    @Test
+    public void testEnabledEvent_E1IsEnabledInS1() {
+        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsEnabledInS1");
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.registerInitialization(State.S1);
+        automaton.registerTransition(State.S1, Event.E1, State.S2);
+        automaton.registerTransition(State.S2, Event.E2, State.S1);
+        automaton.initialize();
+        Boolean isE1Enabled = automaton.isEventEnabled(Event.E1);
+        Assert.assertTrue("E1 should be enabled", isE1Enabled);
     }
 
     @Test
