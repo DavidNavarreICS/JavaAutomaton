@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -52,6 +53,26 @@ public class AutomatonTest {
     private static final Object[] parametersS2 = new Object[]{false, "FOO1", "FOO2"};
 
     public AutomatonTest() {
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_NullEventSet_ShouldFail() {
+        final Automaton<Event, State> automaton = new Automaton(null, EnumSet.allOf(State.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_EmptyEventSet_ShouldFail() {
+        final Automaton<Event, State> automaton = new Automaton(new HashSet<Event>(0), EnumSet.allOf(State.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_NullStateSet_ShouldFail() {
+        final Automaton<Event, State> automaton = new Automaton(EnumSet.allOf(Event.class), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_EmptyStateSet_ShouldFail() {
+        final Automaton<Event, State> automaton = new Automaton(EnumSet.allOf(Event.class), new HashSet<State>(0));
     }
 
     @Test
@@ -97,6 +118,14 @@ public class AutomatonTest {
         LOG.log(Level.INFO, "################ testCreateRegister_IncorrectName");
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(INCORRECT_REGISTER_NAME);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateRegister_NameAlreadyUsed() {
+        LOG.log(Level.INFO, "################ testCreateRegister_NameAlreadyUsed");
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.createRegister(CORRECT_REGISTER_NAME);
+        automaton.createRegister(CORRECT_REGISTER_NAME);
     }
 
     @Test
