@@ -47,6 +47,7 @@ public class AutomatonTest {
     private static final Logger LOG = Logger.getLogger(AutomatonTest.class.getName());
     private static final PreconditionImpl p1 = new PreconditionImpl(Boolean.TRUE);
     private static final PreconditionImpl p2 = new PreconditionImpl(Boolean.FALSE);
+    private static final PreconditionNeverVerified p3 = new PreconditionNeverVerified();
     private static final ActionImpl a1 = new ActionImpl(1);
     private static final ActionImpl a2 = new ActionImpl(2);
     private static final Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
@@ -114,10 +115,32 @@ public class AutomatonTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testSetRegister_RegisterDoesNotExists() {
+        LOG.log(Level.INFO, "################ testSetRegister_RegisterDoesNotExists");
+        final Automaton<Event, State> automaton = getAutomaton();
+        final Integer value = 0;
+        automaton.setRegisterValue(CORRECT_REGISTER_NAME, value);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetRegister_RegisterDoesNotExists() {
+        LOG.log(Level.INFO, "################ testGetRegister_RegisterDoesNotExists");
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.getRegisterValue(CORRECT_REGISTER_NAME, Integer.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateRegister_IncorrectName() {
         LOG.log(Level.INFO, "################ testCreateRegister_IncorrectName");
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(INCORRECT_REGISTER_NAME);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateRegister_NullName() {
+        LOG.log(Level.INFO, "################ testCreateRegister_NullName");
+        final Automaton<Event, State> automaton = getAutomaton();
+        automaton.createRegister(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -172,6 +195,13 @@ public class AutomatonTest {
         Assert.assertEquals("The initial state should be the one registered as an initialization: S2", State.S2, result);
         Object receivedParameter = a2.getExecutionParameters();
         Assert.assertEquals("Initial parameters lost during initialization", parametersS2[2], receivedParameter);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionNeverReachable() {
+        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionNeverReachable");
+        final Automaton<Event, State> automaton = getFooAutomaton();
+        automaton.initialize(parametersS1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -391,6 +421,18 @@ public class AutomatonTest {
         return automaton;
     }
 
+    private Automaton<Event, State> getFooAutomaton() {
+        a1.reinit();
+        a2.reinit();
+        final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
+        final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
+        final List<Action> actions = new ArrayList<>(Arrays.asList(a1, a2));
+        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p3, p3));
+        automaton.registerInitialization(states, actions, preconditions);
+
+        return automaton;
+    }
+
     private class StatePropertyChangeListener implements PropertyChangeListener {
 
         private Object newValue;
@@ -476,5 +518,14 @@ public class AutomatonTest {
         public String toString() {
             return "PreconditionImpl{" + "condition=" + condition + '}';
         }
+    }
+
+    private static class PreconditionNeverVerified implements Precondition {
+
+        @Override
+        public boolean isVerified(Object... parameters) {
+            return false;
+        }
+
     }
 }
