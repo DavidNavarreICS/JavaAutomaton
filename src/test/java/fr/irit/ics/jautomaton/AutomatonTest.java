@@ -24,7 +24,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,28 +57,27 @@ public class AutomatonTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructor_NullEventSet_ShouldFail() {
+    public void testConstructorNullEventSetShouldFail() {
         final Automaton<Event, State> automaton = new Automaton(null, EnumSet.allOf(State.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructor_EmptyEventSet_ShouldFail() {
+    public void testConstructorEmptyEventSetShouldFail() {
         final Automaton<Event, State> automaton = new Automaton(new HashSet<Event>(0), EnumSet.allOf(State.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructor_NullStateSet_ShouldFail() {
+    public void testConstructorNullStateSetShouldFail() {
         final Automaton<Event, State> automaton = new Automaton(EnumSet.allOf(Event.class), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructor_EmptyStateSet_ShouldFail() {
+    public void testConstructorEmptyStateSetShouldFail() {
         final Automaton<Event, State> automaton = new Automaton(EnumSet.allOf(Event.class), new HashSet<State>(0));
     }
 
     @Test
     public void testAcceptEventIsCorrect() {
-        LOG.log(Level.INFO, "################ testAcceptEventIsCorrect");
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         automaton.acceptEvent(Event.E1);
@@ -90,23 +88,20 @@ public class AutomatonTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAcceptEventE2Incorrect() {
-        LOG.log(Level.INFO, "################ testAcceptEventE2Incorrect");
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         automaton.acceptEvent(Event.E2);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAcceptEvent_EventNullNotAllowed() {
-        LOG.log(Level.INFO, "################ testAcceptEvent_EventNullNotAllowed");
+    public void testAcceptEventEventNullNotAllowed() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         automaton.acceptEvent(null);
     }
 
     @Test
-    public void testCreateRegister_CorrectName() {
-        LOG.log(Level.INFO, "################ testCreateRegister_CorrectName");
+    public void testCreateRegisterCorrectName() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(CORRECT_REGISTER_NAME);
         final Integer value = 0;
@@ -116,45 +111,39 @@ public class AutomatonTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetRegister_RegisterDoesNotExists() {
-        LOG.log(Level.INFO, "################ testSetRegister_RegisterDoesNotExists");
+    public void testSetRegisterRegisterDoesNotExists() {
         final Automaton<Event, State> automaton = getAutomaton();
         final Integer value = 0;
         automaton.setRegisterValue(CORRECT_REGISTER_NAME, value);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetRegister_RegisterDoesNotExists() {
-        LOG.log(Level.INFO, "################ testGetRegister_RegisterDoesNotExists");
+    public void testGetRegisterRegisterDoesNotExists() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.getRegisterValue(CORRECT_REGISTER_NAME, Integer.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateRegister_IncorrectName() {
-        LOG.log(Level.INFO, "################ testCreateRegister_IncorrectName");
+    public void testCreateRegisterIncorrectName() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(INCORRECT_REGISTER_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateRegister_NullName() {
-        LOG.log(Level.INFO, "################ testCreateRegister_NullName");
+    public void testCreateRegisterNullName() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateRegister_NameAlreadyUsed() {
-        LOG.log(Level.INFO, "################ testCreateRegister_NameAlreadyUsed");
+    public void testCreateRegisterNameAlreadyUsed() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(CORRECT_REGISTER_NAME);
         automaton.createRegister(CORRECT_REGISTER_NAME);
     }
 
     @Test
-    public void testRegisterInitialization_SimpleState() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleState");
+    public void testRegisterInitializationSimpleState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.registerInitialization(State.S1);
         automaton.initialize();
@@ -163,8 +152,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_SimpleStateWithAction() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithAction");
+    public void testRegisterInitializationSimpleStateWithAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final ActionImpl actionImpl = new ActionImpl(0);
         automaton.registerInitialization(State.S1, actionImpl);
@@ -177,8 +165,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_SimpleStateWithNullAction() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithNullAction");
+    public void testRegisterInitializationSimpleStateWithNullAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final ActionImpl actionImpl = null;
         automaton.registerInitialization(State.S1, actionImpl);
@@ -189,8 +176,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_SimpleStateWithEmptyAction() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithNullAction");
+    public void testRegisterInitializationSimpleStateWithEmptyAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
@@ -204,8 +190,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_SimpleStateWithNullActionAndNullPrecondition() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_SimpleStateWithNullActionAndNullPrecondition");
+    public void testRegisterInitializationSimpleStateWithNullActionAndNullPrecondition() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
@@ -219,8 +204,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch1");
+    public void testRegisterInitializationMultipleStateWithActionAndPreconditionBranch1() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(parametersS1);
         State result = automaton.getCurrentState();
@@ -230,8 +214,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch2() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionBranch2");
+    public void testRegisterInitializationMultipleStateWithActionAndPreconditionBranch2() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
@@ -241,8 +224,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_MultipleStateWithFewActionsAndFewPreconditions() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithFewActionsAndFewPreconditions");
+    public void testRegisterInitializationMultipleStateWithFewActionsAndFewPreconditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -256,8 +238,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_MultipleStateWithOneStateNullActionsAndNullPreconditions() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithOneStateNullActionsAndNullPreconditions");
+    public void testRegisterInitializationMultipleStateWithOneStateNullActionsAndNullPreconditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -271,8 +252,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitialization_MultipleStateWithOneStateEmptyActionsAndEmptyPreconditions() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithOneStateEmptyActionsAndEmptyPreconditions");
+    public void testRegisterInitializationMultipleStateWithOneStateEmptyActionsAndEmptyPreconditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -286,36 +266,31 @@ public class AutomatonTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionNeverReachable() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionNeverReachable");
+    public void testRegisterInitializationMultipleStateWithActionAndPreconditionNeverReachable() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.initialize(parametersS1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionNullSetOfState() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionNullSetOfState");
+    public void testRegisterInitializationMultipleStateWithActionAndPreconditionNullSetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.registerInitialization(null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitialization_MultipleStateWithActionAndPreconditionEmptySetOfState() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_MultipleStateWithActionAndPreconditionEmptySetOfState");
+    public void testRegisterInitializationMultipleStateWithActionAndPreconditionEmptySetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.registerInitialization(new ArrayList<State>(0), null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitialization_IncorrectState() {
-        LOG.log(Level.INFO, "################ testRegisterInitialization_IncorrectState");
+    public void testRegisterInitializationIncorrectState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.registerInitialization(null);
     }
 
     @Test
-    public void testRegisterTransition_TwoFinalStatesFromSameInitialState_Branch1() {
-        LOG.log(Level.INFO, "################ testRegisterTransition_TwoFinalStatesFromSameInitialState_Branch1");
+    public void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch1() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -333,8 +308,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterTransition_TwoFinalStatesFromSameInitialState_Branch2() {
-        LOG.log(Level.INFO, "################ testRegisterTransition_TwoFinalStatesFromSameInitialState_Branch2");
+    public void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch2() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -352,8 +326,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E1IsNotEnabledWhileNotInitialized() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsNotEnabledWhileNotInitialized");
+    public void testEnabledEventE1IsNotEnabledWhileNotInitialized() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -364,8 +337,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E1IsEnabled() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsEnabled");
+    public void testEnabledEventE1IsEnabled() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -377,8 +349,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E2IsNotEnabled() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E2IsNotEnabled");
+    public void testEnabledEventE2IsNotEnabled() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -390,8 +361,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E2IsNotEnabledInS1() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E2IsNotEnabled");
+    public void testEnabledEventE2IsNotEnabledInS1() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -404,8 +374,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEvent_E1IsEnabledInS1() {
-        LOG.log(Level.INFO, "################ testEnabledEvent_E1IsEnabledInS1");
+    public void testEnabledEventE1IsEnabledInS1() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.registerInitialization(State.S1);
         automaton.registerTransition(State.S1, Event.E1, State.S2);
@@ -416,8 +385,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListener_InitialState() {
-        LOG.log(Level.INFO, "################ testPropertyChangeListener_InitialState");
+    public void testPropertyChangeListenerInitialState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, statePropertyListener);
@@ -427,8 +395,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListener_InitialEnablingE1() {
-        LOG.log(Level.INFO, "################ testPropertyChangeListener_InitialEnablingE1");
+    public void testPropertyChangeListenerInitialEnablingE1() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final EventPropertyChangeListener eventPropertyListener = new EventPropertyChangeListener(Event.E1);
         automaton.addPropertyChangeListener(eventPropertyListener.getPropertyName(), eventPropertyListener);
@@ -438,8 +405,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListener_InitialEnablingE2() {
-        LOG.log(Level.INFO, "################ testPropertyChangeListener_InitialEnablingE2");
+    public void testPropertyChangeListenerInitialEnablingE2() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final EventPropertyChangeListener eventPropertyListener = new EventPropertyChangeListener(Event.E2);
         automaton.addPropertyChangeListener(eventPropertyListener.getPropertyName(), eventPropertyListener);
@@ -449,8 +415,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListener_AllowedE1() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_AllowedE1");
+    public void testAddPropertyChangeListenerAllowedE1() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Event.E1.toString() + Automaton.ENABLED_SUFFIX, listener);
@@ -461,8 +426,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListener_AllowedE2() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_AllowedE2");
+    public void testAddPropertyChangeListenerAllowedE2() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Event.E2.toString() + Automaton.ENABLED_SUFFIX, listener);
@@ -473,8 +437,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListener_AllowedState() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_AllowedState");
+    public void testAddPropertyChangeListenerAllowedState() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -485,8 +448,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRemovePropertyChangeListener_PropertyChangeListener() {
-        LOG.log(Level.INFO, "################ testRemovePropertyChangeListener_PropertyChangeListener");
+    public void testRemovePropertyChangeListenerPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(listener);
@@ -501,8 +463,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListener_String_PropertyChangeListener() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_String_PropertyChangeListener");
+    public void testAddPropertyChangeListenerStringPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -513,8 +474,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRemovePropertyChangeListener_String_PropertyChangeListener() {
-        LOG.log(Level.INFO, "################ testRemovePropertyChangeListener_String_PropertyChangeListener");
+    public void testRemovePropertyChangeListenerStringPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -529,23 +489,20 @@ public class AutomatonTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddPropertyChangeListener_StringNotAllowed() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_StringNotAllowed");
+    public void testAddPropertyChangeListenerStringNotAllowed() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(INCORRECT_PROPERTY_NAME, listener);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddPropertyChangeListener_ListenerNull() {
-        LOG.log(Level.INFO, "################ testAddPropertyChangeListener_ListenerNull");
+    public void testAddPropertyChangeListenerListenerNull() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, null);
     }
 
     @Test
     public void testToString() {
-        LOG.log(Level.INFO, "################ testToString");
         final Automaton<Event, State> automaton = getAutomaton();
         String result = automaton.toString();
         Boolean isNull = Objects.isNull(result);
@@ -556,7 +513,6 @@ public class AutomatonTest {
 
     @Test
     public void testToStringForComplexAutomaton() {
-        LOG.log(Level.INFO, "################ testToStringForComplexAutomaton");
         final Automaton<Event, State> automaton = getFullAutomaton();
         String result = automaton.toString();
         Boolean isNull = Objects.isNull(result);
