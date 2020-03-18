@@ -833,7 +833,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      *
      * @param listener the concerned listener
      */
-    private void checkListener(PropertyChangeListener listener) {
+    private static void checkListener(PropertyChangeListener listener) {
         if (Objects.isNull(listener)) {
             throw new IllegalArgumentException("The added listener cannot be null");
         }
