@@ -54,7 +54,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final Pattern REGISTER_NAME_PATTERN = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
+    private static final Pattern REGISTER_NAME_PATTERN
+            = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
     /**
      * Main data structure that contains any items defining the automaton.
      */
@@ -101,11 +102,13 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Error message used when the set of states is empty.
      */
-    private static final String ERROR_SET_OF_STATES_CANNOT_BE_EMPTY = "The set of States cannot be empty";
+    private static final String ERROR_SET_OF_STATES_CANNOT_BE_EMPTY
+            = "The set of States cannot be empty";
     /**
      * Error message used when the set of events is empty.
      */
-    private static final String ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY = "The set of Events cannot be empty";
+    private static final String ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY
+            = "The set of Events cannot be empty";
     /**
      * String used as a prefix for any state in any message.
      */
@@ -126,7 +129,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * String that provides an error message.
      */
-    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL = "The initial state cannot be null";
+    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL
+            = "The initial state cannot be null";
 
     /**
      * Build the base structure of an automaton based on a set of events and a
@@ -136,7 +140,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param theStates must be set containing at least one state.
      */
     public Automaton(final Set<E> theEvents, final Set<S> theStates) {
-        LOG.log(Level.INFO, "Creating automaton with States={0}, Events={1}", new Object[]{theStates, theEvents});
+        LOG.log(Level.FINEST,
+                "Creating automaton with States={0} and Events={1}",
+                new Object[]{theStates, theEvents});
         if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
             LOG.log(Level.SEVERE, ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
@@ -164,7 +170,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * computing
      * @return the error message
      */
-    private String getErrorMessageNoPossibleStateChange(final E event, final Object... parameters) {
+    private String getErrorMessageNoPossibleStateChange(
+            final E event,
+            final Object... parameters) {
         return "No state change possible with parameters "
                 + Arrays.deepToString(parameters)
                 + " for " + EVENT_PREFIX + event
@@ -179,8 +187,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @return the error message
      */
     private String getErrorMessageEventNotAllowedInContext(final E event) {
-        return EVENT_PREFIX + event
-                + " is not allowed in " + STATE_PREFIX + currentState;
+        return EVENT_PREFIX
+                + event
+                + " is not allowed in "
+                + STATE_PREFIX
+                + currentState;
     }
 
     /**
@@ -235,9 +246,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         boolean foundState = false;
         for (Map.Entry<Precondition, Pair<S, Action>> entry : futurState.
                 entrySet()) {
-            LOG.log(Level.INFO, "Trying precondition: {0}", entry.getKey());
+            LOG.log(Level.FINEST, "Trying precondition: {0}", entry.getKey());
             if (entry.getKey().isVerified(parameters)) {
-                LOG.log(Level.INFO,
+                LOG.log(Level.FINEST,
                         "Precondition: {0} is verified, going to state {1}",
                         new Object[]{entry.getKey(), entry.getValue().getFirst()});
                 goToState(entry.getValue().getFirst());
@@ -248,7 +259,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
         if (!foundState) {
             LOG.log(
-                    Level.SEVERE, getErrorMessageNoPossibleStateChange(event, parameters));
+                    Level.SEVERE,
+                    getErrorMessageNoPossibleStateChange(event, parameters));
             throw new IllegalArgumentException(
                     getErrorMessageNoPossibleStateChange(event, parameters));
         }
@@ -263,8 +275,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param parameters the parameters of both the precondition and the action
      */
     public void acceptEvent(final E event, final Object... parameters) {
+        LOG.log(Level.FINEST,
+                "Accepting Event {0} with parameters {1}",
+                new Object[]{event, parameters});
         if (Objects.isNull(event)) {
-            throw new IllegalArgumentException("Event used to fire a transition cannot be null");
+            throw new IllegalArgumentException(
+                    "Event used to fire a transition cannot be null");
         }
         Pair<E, S> key = new Pair<>(event, currentState);
         if (dataStructure.containsKey(key)) {
@@ -283,11 +299,15 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param name of the register.
      */
     public void createRegister(final String name) {
+        LOG.log(Level.FINEST,
+                "Creating register {0}",
+                new Object[]{name});
         if (registers.containsKey(name)) {
             LOG.log(Level.SEVERE, getErrorMessageRegisterAlreadyExists(name));
             throw new IllegalArgumentException(
                     getErrorMessageRegisterAlreadyExists(name));
-        } else if (Objects.isNull(name) || !REGISTER_NAME_PATTERN.matcher(name).matches()) {
+        } else if (Objects.isNull(name)
+                || !REGISTER_NAME_PATTERN.matcher(name).matches()) {
             LOG.log(Level.SEVERE,
                     getErrorMessageRegisterNameIncorrect(name));
             throw new IllegalArgumentException(
@@ -306,6 +326,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @return the value of the register in the given type
      */
     public <T> T getRegisterValue(final String name, final Class<T> type) {
+        LOG.log(Level.FINEST,
+                "Get register value of register {0} of Class {1}",
+                new Object[]{name, type});
         if (!registers.containsKey(name)) {
             LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
             throw new IllegalArgumentException(
@@ -321,6 +344,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param value the new value of this register
      */
     public void setRegisterValue(final String name, final Object value) {
+        LOG.log(Level.FINEST,
+                "Setting value of the register {0} = {1}",
+                new Object[]{name, value});
         if (!registers.containsKey(name)) {
             LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
             throw new IllegalArgumentException(
@@ -335,7 +361,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param initialState the initial state
      */
     public void registerInitialization(final S initialState) {
-        LOG.log(Level.INFO, "Register Initialization with: {0}", new Object[]{initialState});
+        LOG.log(Level.FINEST,
+                "Register Initialization with: {0}",
+                new Object[]{initialState});
         registerInitialization(initialState, NullAction.getInstance());
     }
 
@@ -349,7 +377,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void registerInitialization(final S initialState,
             final Action initialAction) {
-        LOG.log(Level.INFO, "Register Initialization with: {0}, {1}", new Object[]{initialState, initialAction});
+        LOG.log(Level.FINEST,
+                "Register Initialization with: {0}, {1}",
+                new Object[]{initialState, initialAction});
         if (Objects.isNull(initialState)) {
             LOG.log(Level.SEVERE, ERROR_INITIAL_STATE_CANNOT_BE_NULL);
             throw new IllegalArgumentException(
@@ -380,17 +410,24 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<S> initialStates,
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
-        LOG.log(Level.INFO, "Register Initialization with: {0}, {1}, {2}", new Object[]{initialStates, initialPreconditions, initialActions});
+        LOG.log(Level.FINEST,
+                "Register Initialization with: {0}, {1}, {2}",
+                new Object[]{initialStates, initialPreconditions, initialActions});
         if (Objects.isNull(initialStates) || initialStates.isEmpty()) {
-            LOG.log(Level.SEVERE, ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
+            LOG.log(Level.SEVERE,
+                    ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
                     ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
         }
         if (initialStates.size() == 1) {
-            LOG.log(Level.INFO, "Register single state initilization: {0}", initialStates);
+            LOG.log(Level.FINEST,
+                    "Register single state initilization: {0}",
+                    initialStates);
             registerSingleStateInitialization(initialActions, initialStates);
         } else {
-            LOG.log(Level.INFO, "Register multiple state initilization: {0}", initialStates);
+            LOG.log(Level.FINEST,
+                    "Register multiple state initilization: {0}",
+                    initialStates);
             registerMultipleStatesInitilization(initialStates, initialActions, initialPreconditions);
         }
     }
@@ -404,8 +441,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param initialStates the initial state (at most the first item of this
      * list is used)
      */
-    private void registerSingleStateInitialization(final List<Action> initialActions, final List<S> initialStates) {
-        LOG.log(Level.INFO, "Register single state initialisation with: {0}, {1}", new Object[]{initialActions, initialStates});
+    private void registerSingleStateInitialization(
+            final List<Action> initialActions,
+            final List<S> initialStates) {
+        LOG.log(Level.FINEST,
+                "Register single state initialisation with: {0}, {1}",
+                new Object[]{initialActions, initialStates});
         final Action action;
         if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
             action = NullAction.getInstance();
@@ -428,7 +469,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final List<S> initialStates,
             final List<Action> initialActions,
             final List<Precondition> initialPreconditions) {
-        LOG.log(Level.INFO, "Register multiple state initialisation with: {0}, {1}, {2}", new Object[]{initialStates, initialActions, initialStates});
+        LOG.log(Level.FINEST,
+                "Register multiple state initialisation with: {0}, {1}, {2}",
+                new Object[]{initialStates, initialActions, initialStates});
         for (int i = 0; i < initialStates.size(); i++) {
             final S initialState = initialStates.get(i);
             final Action action;
@@ -461,6 +504,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void registerTransition(final S state1, final E event,
             final S state2) {
+        LOG.log(Level.FINEST,
+                "Registering new transition from State {0} to State {2} on Event {1}",
+                new Object[]{state1, event, state2});
         registerTransition(state1, event, state2, NullAction.getInstance());
     }
 
@@ -475,6 +521,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void registerTransition(final S state1, final E event,
             final S state2, final Action action) {
+        LOG.log(Level.FINEST,
+                "Registering new transition from State {0} to State {2} "
+                + "on Event {1} with execution of Action {3}",
+                new Object[]{state1, event, state2, action});
         registerTransition(state1, event, state2, action, TruePrecondition.
                 getInstance());
     }
@@ -494,6 +544,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public void registerTransition(final S state1, final E event,
             final S state2, final Action action,
             final Precondition precondition) {
+        LOG.log(Level.FINEST,
+                "Registering new transition from State {0} to State {2} "
+                + "on Event {1} with execution of Action {3}, "
+                + "under condition {4}",
+                new Object[]{state1, event, state2, action, precondition});
         final Map<Precondition, Pair<S, Action>> transitions;
         final Pair<E, S> key = new Pair<>(event, state1);
         if (dataStructure.containsKey(key)) {
@@ -513,7 +568,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * actions.
      */
     public void initialize(final Object... parameters) {
-        LOG.log(Level.INFO, "Initializing with parameters: {0}", new Object[]{parameters});
+        LOG.log(Level.FINEST,
+                "Initializing with parameters: {0}",
+                new Object[]{parameters});
         tryStateChange(null, initialStateData, parameters);
     }
 
@@ -524,6 +581,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param state the future state
      */
     private void goToState(final S state) {
+        LOG.log(Level.FINEST,
+                "Going to State {0}",
+                new Object[]{state});
         S oldState = currentState;
         currentState = state;
         final Set<E> oldEnableEvents = new HashSet<>(events.size());
@@ -550,6 +610,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @return trus if the event should be enabled
      */
     public boolean isEventEnabled(final E event) {
+        LOG.log(Level.FINEST,
+                "Providing enabling of Event {0} in State {1}",
+                new Object[]{event, currentState});
         if (Objects.isNull(currentState)) {
             return false;
         }
@@ -567,6 +630,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void addPropertyChangeListener(
             final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Registering Listener {0}",
+                new Object[]{listener});
         checkListener(listener);
         support.addPropertyChangeListener(listener);
     }
@@ -581,6 +647,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     public void removePropertyChangeListener(
             final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Removing Listener {0}",
+                new Object[]{listener});
         checkListener(listener);
         support.removePropertyChangeListener(listener);
     }
@@ -597,6 +666,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public void addPropertyChangeListener(
             final String propertyName,
             final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Registering Listener {0} for Property {1}",
+                new Object[]{listener, propertyName});
         checkPropertyName(propertyName);
         checkListener(listener);
         support.addPropertyChangeListener(propertyName, listener);
@@ -614,6 +686,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
     public void removePropertyChangeListener(
             final String propertyName,
             final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Removing Listener {0} from Property {1}",
+                new Object[]{listener, propertyName});
         checkPropertyName(propertyName);
         checkListener(listener);
         support.removePropertyChangeListener(propertyName, listener);
@@ -748,7 +823,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
             }
         }
         if (!isCorrect) {
-            throw new IllegalArgumentException("The name of the property to listen to should be 'state' or <anyEvent>_enabled");
+            throw new IllegalArgumentException(
+                    "The name of the property to listen to should be 'state' or <anyEvent>_enabled");
         }
     }
 
