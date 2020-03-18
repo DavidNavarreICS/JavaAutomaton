@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class S2CornerCasesTest extends AbstractCornerCasesTest {
 
-    @Parameterized.Parameters(name = "{index}: trigger event {0}")
+    @Parameterized.Parameters(name = "{index}: trigger event {0} in state S2")
     public static Object[] data() {
         return getData(Arrays.asList(TestConfiguration.Event.CB2));
     }

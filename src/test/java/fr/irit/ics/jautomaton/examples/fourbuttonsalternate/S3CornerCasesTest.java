@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.irit.ics.jautomaton.examples.fourbuttonssimple;
+package fr.irit.ics.jautomaton.examples.fourbuttonsalternate;
 
+import fr.irit.ics.jautomaton.examples.fourbuttonsalternate.TestConfiguration.Event;
 import java.util.Arrays;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,13 +29,12 @@ public class S3CornerCasesTest extends AbstractCornerCasesTest {
 
     @Parameterized.Parameters(name = "{index}: trigger event {0} in state S3")
     public static Object[] data() {
-        return getData(Arrays.asList(TestConfiguration.Event.CB3));
+        return getData(Arrays.asList(Event.CB1, Event.CB2));
     }
 
     @Override
     public void putInCorrectState() {
-        automaton.acceptEvent(TestConfiguration.Event.CB1);
-        automaton.acceptEvent(TestConfiguration.Event.CB2);
+        automaton.acceptEvent(Event.CB2);
     }
 
 }
