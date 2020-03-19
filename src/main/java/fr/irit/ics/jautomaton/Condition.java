@@ -19,14 +19,14 @@ package fr.irit.ics.jautomaton;
  *
  * @author David
  */
-public interface Precondition {
+public interface Condition {
 
     /**
-     * Verify the precondition.
+     * Verify the condition.
      *
      * @param parameters the parameters
-     * @return <b>true</b> if the precondition is verified according to the
-     * given parameters.
+     * @return <b>true</b> if the condition is verified according to the given
+     * parameters.
      */
     boolean isVerified(Object... parameters);
 }

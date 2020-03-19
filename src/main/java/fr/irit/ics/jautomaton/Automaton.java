@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * <ul>
  * <li>States</li>
  * <li>Events</li>
- * <li>Event preconditions</li>
+ * <li>Event conditions</li>
  * <li>Actions on transitions</li>
  * </ul>
  * It embeds property change listening means as a notification mechanism too.
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * <li> The constructor of the class
  * <li> The add transitions methods null {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum)},
  * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)},
- * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Precondition)}
+ * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
  * <li> The creation of an initial state null {@link Automaton#registerInitialization(java.lang.Enum)},
  * {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
  * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
@@ -108,17 +108,17 @@ import java.util.regex.Pattern;
  * <li>For the initialization of the automaton (xase of multiple initial states)
  * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
  * <li> When creating transitions
- * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Precondition)}
+ * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
  * </ul>
  * Conditions must implement the interface
- * {@link fr.irit.ics.jautomaton.Precondition}
+ * {@link fr.irit.ics.jautomaton.Condition}
  *
  * @author David Navarre
  *
  * @param <E> the enumeration set of accepted Event values
  * @param <S> the enumeration set of accepted State values
  * @see fr.irit.ics.jautomaton.Action
- * @see fr.irit.ics.jautomaton.Precondition
+ * @see fr.irit.ics.jautomaton.Condition
  */
 public final class Automaton<E extends Enum, S extends Enum> {
 
@@ -134,7 +134,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Main data structure that contains any items defining the automaton.
      */
-    private final Map<Pair<E, S>, Map<Precondition, Pair<S, Action>>> dataStructure;
+    private final Map<Pair<E, S>, Map<Condition, Pair<S, Action>>> dataStructure;
     /**
      * The state property prefix, used for property change listening.
      */
@@ -164,14 +164,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Stores the description on the initial state.
      * <br>Under some conditions, the initial state may vary.
      */
-    private final Map<Precondition, Pair<S, Action>> initialStateData;
+    private final Map<Condition, Pair<S, Action>> initialStateData;
     /**
      * Delegate that handles listeners for this automaton.
      */
     private final PropertyChangeSupport support;
     /**
      * Stores a set of register that may be used by the automaton (for actions
-     * and/or preconditions).
+     * and/or conditions).
      */
     private final Map<String, Object> registers;
     /**
@@ -241,7 +241,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * current state.
      *
      * @param event the event that occured
-     * @param parameters the parameters used for precondition and/or action
+     * @param parameters the parameters used for condition and/or action
      * computing
      * @return the error message
      */
@@ -306,25 +306,25 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Try to go from the current state to the future state.
      * <br>The future state is determined amongst a set of possible future
-     * states by checking some preconditions (the preconditions may be evaluated
-     * using object parameters).
+     * states by checking some conditions (the conditions may be evaluated using
+     * object parameters).
      *
      * @param event the event that occured (only for notification purpose)
      * @param futurState the set of possible future states
      * @param parameters the set of parameters used for evaluating the
-     * preconditions and/or the execution of the corresponding action.
+     * conditions and/or the execution of the corresponding action.
      */
     private void tryStateChange(
             final E event,
-            final Map<Precondition, Pair<S, Action>> futurState,
+            final Map<Condition, Pair<S, Action>> futurState,
             final Object... parameters) {
         boolean foundState = false;
-        for (Map.Entry<Precondition, Pair<S, Action>> entry : futurState.
+        for (Map.Entry<Condition, Pair<S, Action>> entry : futurState.
                 entrySet()) {
-            LOG.log(Level.FINEST, "Trying precondition: {0}", entry.getKey());
+            LOG.log(Level.FINEST, "Trying condition: {0}", entry.getKey());
             if (entry.getKey().isVerified(parameters)) {
                 LOG.log(Level.FINEST,
-                        "Precondition: {0} is verified, going to state {1}",
+                        "Condition: {0} is verified, going to state {1}",
                         new Object[]{entry.getKey(), entry.getValue().getFirst()});
                 goToState(entry.getValue().getFirst());
                 entry.getValue().getSecond().execute(parameters);
@@ -343,11 +343,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
 
     /**
      * This methods is used after the corresponding event occured. The object
-     * parameters provided may be used for the evaluation of the precondition
+     * parameters provided may be used for the evaluation of the condition
      * and/or the execution of the action.
      *
      * @param event the event that has been triggered
-     * @param parameters the parameters of both the precondition and the action
+     * @param parameters the parameters of both the condition and the action
      */
     public void acceptEvent(final E event, final Object... parameters) {
         LOG.log(Level.FINEST,
@@ -473,21 +473,21 @@ public final class Automaton<E extends Enum, S extends Enum> {
 
     /**
      * Registers a complex initialization where several initial states are
-     * possible according to some preconditions. The three sets must be ordered.
+     * possible according to some conditions. The three sets must be ordered.
      *
      * @param initialStates the not empty set of possible initial states
      * @param initialActions the initial set of actions action (if null it is
      * set to a void action
-     * @param initialPreconditions the initial set of preconditions (if null it
-     * is set to an always precondition
+     * @param initialConditions the initial set of conditions (if null it is set
+     * to an always condition
      */
     public void registerInitialization(
             final List<S> initialStates,
             final List<Action> initialActions,
-            final List<Precondition> initialPreconditions) {
+            final List<Condition> initialConditions) {
         LOG.log(Level.FINEST,
                 "Register Initialization with: {0}, {1}, {2}",
-                new Object[]{initialStates, initialPreconditions, initialActions});
+                new Object[]{initialStates, initialConditions, initialActions});
         if (Objects.isNull(initialStates) || initialStates.isEmpty()) {
             LOG.log(Level.SEVERE,
                     ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY);
@@ -503,7 +503,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             LOG.log(Level.FINEST,
                     "Register multiple state initilization: {0}",
                     initialStates);
-            registerMultipleStatesInitilization(initialStates, initialActions, initialPreconditions);
+            registerMultipleStatesInitilization(initialStates, initialActions, initialConditions);
         }
     }
 
@@ -528,7 +528,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
         } else {
             action = initialActions.get(0);
         }
-        initialStateData.put(TruePrecondition.getInstance(),
+        initialStateData.put(TrueCondition.getInstance(),
                 new Pair<>(initialStates.get(0), action));
     }
 
@@ -538,19 +538,19 @@ public final class Automaton<E extends Enum, S extends Enum> {
      *
      * @param initialStates the non empty set of initial states
      * @param initialActions a set of actions
-     * @param initialPreconditions a set of precondition
+     * @param initialConditions a set of conditions
      */
     private void registerMultipleStatesInitilization(
             final List<S> initialStates,
             final List<Action> initialActions,
-            final List<Precondition> initialPreconditions) {
+            final List<Condition> initialConditions) {
         LOG.log(Level.FINEST,
                 "Register multiple state initialisation with: {0}, {1}, {2}",
                 new Object[]{initialStates, initialActions, initialStates});
         for (int i = 0; i < initialStates.size(); i++) {
             final S initialState = initialStates.get(i);
             final Action action;
-            final Precondition precondition;
+            final Condition condition;
             if (Objects.isNull(initialActions)) {
                 action = NullAction.getInstance();
             } else if (initialActions.size() < i + 1) {
@@ -558,13 +558,13 @@ public final class Automaton<E extends Enum, S extends Enum> {
             } else {
                 action = initialActions.get(i);
             }
-            if (Objects.isNull(initialPreconditions)
-                    || initialPreconditions.size() < i + 1) {
-                precondition = TruePrecondition.getInstance();
+            if (Objects.isNull(initialConditions)
+                    || initialConditions.size() < i + 1) {
+                condition = TrueCondition.getInstance();
             } else {
-                precondition = initialPreconditions.get(i);
+                condition = initialConditions.get(i);
             }
-            initialStateData.put(precondition, new Pair<>(initialState,
+            initialStateData.put(condition, new Pair<>(initialState,
                     action));
         }
     }
@@ -600,7 +600,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 "Registering new transition from State {0} to State {2} "
                 + "on Event {1} with execution of Action {3}",
                 new Object[]{state1, event, state2, action});
-        registerTransition(state1, event, state2, action, TruePrecondition.
+        registerTransition(state1, event, state2, action, TrueCondition.
                 getInstance());
     }
 
@@ -613,18 +613,18 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param event the triggering event
      * @param state2 the future state
      * @param action the action to performed
-     * @param precondition the conditions that must be verified to allow the
+     * @param condition the conditions that must be verified to allow the
      * transition
      */
     public void registerTransition(final S state1, final E event,
             final S state2, final Action action,
-            final Precondition precondition) {
+            final Condition condition) {
         LOG.log(Level.FINEST,
                 "Registering new transition from State {0} to State {2} "
                 + "on Event {1} with execution of Action {3}, "
                 + "under condition {4}",
-                new Object[]{state1, event, state2, action, precondition});
-        final Map<Precondition, Pair<S, Action>> transitions;
+                new Object[]{state1, event, state2, action, condition});
+        final Map<Condition, Pair<S, Action>> transitions;
         final Pair<E, S> key = new Pair<>(event, state1);
         if (dataStructure.containsKey(key)) {
             transitions = dataStructure.get(key);
@@ -632,14 +632,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
             transitions = new HashMap<>();
             dataStructure.put(key, transitions);
         }
-        transitions.put(precondition, new Pair<>(state2, action));
+        transitions.put(condition, new Pair<>(state2, action));
     }
 
     /**
      * Forces the initialization of the automaton by providing some parameters
-     * that may be used to evaluate preconditions and/or to execute actions.
+     * that may be used to evaluate conditions and/or to execute actions.
      *
-     * @param parameters the possible object values used for precondition and/or
+     * @param parameters the possible object values used for condition and/or
      * actions.
      */
     public void initialize(final Object... parameters) {
@@ -798,9 +798,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         for (S state : states) {
             toString = dataStructure.
                     entrySet().stream()
-                    .filter((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
+                    .filter((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
                             -> (entry.getKey().getSecond().equals(state)))
-                    .map((Map.Entry<Pair<E, S>, Map<Precondition, Pair<S, Action>>> entry)
+                    .map((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
                             -> state
                     + "=>" + entry.getKey().getFirst()
                     + "=>" + entry.getValue().values()
@@ -852,28 +852,28 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * A precondition that is always true.
+     * A condition that is always true.
      */
-    private static class TruePrecondition implements Precondition {
+    private static class TrueCondition implements Condition {
 
         /**
-         * The true precondition unique instance.
+         * The true condition unique instance.
          */
-        private static final TruePrecondition SINGLETON;
+        private static final TrueCondition SINGLETON;
 
         /**
          * The singleton initialization.
          */
         static {
-            SINGLETON = new TruePrecondition();
+            SINGLETON = new TrueCondition();
         }
 
         /**
-         * Provides the unique instance of the always true precondition.
+         * Provides the unique instance of the always true condition.
          *
-         * @return the precondition object
+         * @return the condition object
          */
-        public static TruePrecondition getInstance() {
+        public static TrueCondition getInstance() {
             return SINGLETON;
         }
 

@@ -45,9 +45,9 @@ public class AutomatonTest {
     private static final String CORRECT_REGISTER_NAME = "a1";
     private static final String INCORRECT_REGISTER_NAME = "!a1";
     private static final Logger LOG = Logger.getLogger(AutomatonTest.class.getName());
-    private static final PreconditionImpl p1 = new PreconditionImpl(Boolean.TRUE);
-    private static final PreconditionImpl p2 = new PreconditionImpl(Boolean.FALSE);
-    private static final PreconditionNeverVerified p3 = new PreconditionNeverVerified();
+    private static final ConditionImpl p1 = new ConditionImpl(Boolean.TRUE);
+    private static final ConditionImpl p2 = new ConditionImpl(Boolean.FALSE);
+    private static final ConditionNeverVerified p3 = new ConditionNeverVerified();
     private static final ActionImpl a1 = new ActionImpl(1);
     private static final ActionImpl a2 = new ActionImpl(2);
     private static final Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
@@ -181,8 +181,8 @@ public class AutomatonTest {
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
         final List<Action> actions = Collections.EMPTY_LIST;
-        final List<Precondition> preconditions = Collections.EMPTY_LIST;
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = Collections.EMPTY_LIST;
+        automaton.registerInitialization(states, actions, conditions);
         Object[] parameters = new Object[]{0.0F, "FOO"};
         automaton.initialize(parameters);
         State result = automaton.getCurrentState();
@@ -190,13 +190,13 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleStateWithNullActionAndNullPrecondition() {
+    public void testRegisterInitializationSimpleStateWithNullActionAndNullCondition() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
         final List<Action> actions = null;
-        final List<Precondition> preconditions = null;
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = null;
+        automaton.registerInitialization(states, actions, conditions);
         Object[] parameters = new Object[]{0.0F, "FOO"};
         automaton.initialize(parameters);
         State result = automaton.getCurrentState();
@@ -204,7 +204,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndPreconditionBranch1() {
+    public void testRegisterInitializationMultipleStateWithActionAndConditionBranch1() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(parametersS1);
         State result = automaton.getCurrentState();
@@ -214,7 +214,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndPreconditionBranch2() {
+    public void testRegisterInitializationMultipleStateWithActionAndConditionBranch2() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
@@ -224,61 +224,61 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithFewActionsAndFewPreconditions() {
+    public void testRegisterInitializationMultipleStateWithFewActionsAndFewConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
         final List<Action> actions = new ArrayList<>(Arrays.asList(a1));
-        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p1));
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = new ArrayList<>(Arrays.asList(p1));
+        automaton.registerInitialization(states, actions, conditions);
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
         Assert.assertEquals("The initial state should be the one registered as an initialization: S2", State.S2, result);
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithOneStateNullActionsAndNullPreconditions() {
+    public void testRegisterInitializationMultipleStateWithOneStateNullActionsAndNullConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
         final List<Action> actions = null;
-        final List<Precondition> preconditions = null;
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = null;
+        automaton.registerInitialization(states, actions, conditions);
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
         Assert.assertTrue("The initial state should be the one registered as an initialization: S1 or S2", State.S1.equals(result) || State.S2.equals(result));
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithOneStateEmptyActionsAndEmptyPreconditions() {
+    public void testRegisterInitializationMultipleStateWithOneStateEmptyActionsAndEmptyConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
         final List<Action> actions = Collections.emptyList();
-        final List<Precondition> preconditions = Collections.emptyList();
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = Collections.emptyList();
+        automaton.registerInitialization(states, actions, conditions);
         automaton.initialize(parametersS2);
         State result = automaton.getCurrentState();
         Assert.assertTrue("The initial state should be the one registered as an initialization: S1 or S2", State.S1.equals(result) || State.S2.equals(result));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitializationMultipleStateWithActionAndPreconditionNeverReachable() {
+    public void testRegisterInitializationMultipleStateWithActionAndConditionNeverReachable() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.initialize(parametersS1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitializationMultipleStateWithActionAndPreconditionNullSetOfState() {
+    public void testRegisterInitializationMultipleStateWithActionAndConditionNullSetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.registerInitialization(null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testRegisterInitializationMultipleStateWithActionAndPreconditionEmptySetOfState() {
+    public void testRegisterInitializationMultipleStateWithActionAndConditionEmptySetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         automaton.registerInitialization(new ArrayList<State>(0), null, null);
     }
@@ -548,8 +548,8 @@ public class AutomatonTest {
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
         final List<Action> actions = new ArrayList<>(Arrays.asList(a1, a2));
-        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p1, p2));
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = new ArrayList<>(Arrays.asList(p1, p2));
+        automaton.registerInitialization(states, actions, conditions);
 
         return automaton;
     }
@@ -560,8 +560,8 @@ public class AutomatonTest {
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
         final List<State> states = new ArrayList<>(Arrays.asList(State.S1, State.S2));
         final List<Action> actions = new ArrayList<>(Arrays.asList(a1, a2));
-        final List<Precondition> preconditions = new ArrayList<>(Arrays.asList(p3, p3));
-        automaton.registerInitialization(states, actions, preconditions);
+        final List<Condition> conditions = new ArrayList<>(Arrays.asList(p3, p3));
+        automaton.registerInitialization(states, actions, conditions);
 
         return automaton;
     }
@@ -633,11 +633,11 @@ public class AutomatonTest {
         }
     }
 
-    private static class PreconditionImpl implements Precondition {
+    private static class ConditionImpl implements Condition {
 
         private final Boolean condition;
 
-        public PreconditionImpl(Boolean condition) {
+        public ConditionImpl(Boolean condition) {
             this.condition = condition;
         }
 
@@ -649,11 +649,11 @@ public class AutomatonTest {
 
         @Override
         public String toString() {
-            return "PreconditionImpl{" + "condition=" + condition + '}';
+            return "ConditionImpl{" + "condition=" + condition + '}';
         }
     }
 
-    private static class PreconditionNeverVerified implements Precondition {
+    private static class ConditionNeverVerified implements Condition {
 
         @Override
         public boolean isVerified(Object... parameters) {
