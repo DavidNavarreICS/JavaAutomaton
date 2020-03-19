@@ -47,12 +47,16 @@ import java.util.regex.Pattern;
  * on three methods:
  * <ul>
  * <li> The constructor of the class
- * <li> The add transitions methods null {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum)},
- * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)},
- * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
- * <li> The creation of an initial state null {@link Automaton#registerInitialization(java.lang.Enum)},
- * {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
- * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
+ * <li> The add transitions methods
+ * <br>{@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum)},
+ * <br>{@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum,
+ * fr.irit.ics.jautomaton.Action)},
+ * <br>{@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum,
+ * fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
+ * <li> The creation of an initial state
+ * <br>{@link Automaton#registerInitialization(java.lang.Enum)},
+ * <br>{@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
+ * <br>{@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
  * </ul>
  * <center><img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton"><br>
  * <em>Fig.1 - Example of a simple automaton.</em><br></center>
@@ -78,8 +82,8 @@ import java.util.regex.Pattern;
  *      ...
  * }</pre>
  * <h1>Event handling</h1>
- * The automaton is able to handle events using the method {@link #acceptEvent(java.lang.Enum, java.lang.Object...)
- * }. For instance,
+ * The automaton is able to handle events using the method null {@link #acceptEvent(java.lang.Enum,
+ * java.lang.Object...)}. For instance,
  * <pre>
  *      private void doIt(){
  *          automaton.acceptEvent(Event.Ev1);
@@ -99,7 +103,8 @@ import java.util.regex.Pattern;
  * <br>{@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)
  * }
  * <li> When creating transitions
- * <br>{@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)
+ * <br>{@link Automaton#registerTransition(java.lang.Enum,
+ * java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)
  * }
  * </ul>
  * Actions must implement the interface {@link fr.irit.ics.jautomaton.Action}
@@ -107,10 +112,10 @@ import java.util.regex.Pattern;
  * <h1>Conditions</h1>
  * It is possible to add conditions in two different situations:
  * <ul>
- * <li>For the initialization of the automaton (xase of multiple initial states)
+ * <li>For the initialization of the automaton (case of multiple initial states)
  * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
- * <li> When creating transitions
- * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
+ * <li> When creating transitions null {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum,
+ * java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
  * </ul>
  * Conditions must implement the interface
  * {@link fr.irit.ics.jautomaton.Condition}
