@@ -40,10 +40,85 @@ import java.util.regex.Pattern;
  * <li>Event preconditions</li>
  * <li>Actions on transitions</li>
  * </ul>
+ * It embeds property change listening means as a notification mechanism too.
+ * <h1>Build a simple Automaton</h1>
+ * As an example, Fig.1 presents a simple automaton used to illustrate the
+ * basics of the building and use of automata.<br>To build an automaton relies
+ * on three methods:
+ * <ul>
+ * <li> The constructor of the class
+ * <li> The add transitions methods null {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum)},
+ * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)},
+ * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Precondition)}
+ * <li> The creation of an initial state null {@link Automaton#registerInitialization(java.lang.Enum)},
+ * {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
+ * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
+ * </ul>
+ * <center><img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton"><br>
+ * <em>Fig.1 - Example of a simple automaton.</em><br></center>
+ * An automaton may be used as an attribute of any class.<br>
+ * <pre>
+ * public class MyApp {
+ *      private enum State {S1, S2}
+ *      private enum Event {Ev1, Ev2}
+ *      private Automaton&lt;Event, State&gt; automaton;
+ *      ...
+ *      public MyApp(...){
+ *          //Does something.
+ *          configureAutomaton();
+ *      }
+ *
+ *      private void configureAutomaton() {
+ *          automaton = new Automaton&lt;&gt;(EnumSet.allOf(Event.class), EnumSet.allOf(State.class));
+ *          automaton.registerTransition(State.S1, Event.Ev1, State.S2);
+ *          automaton.registerTransition(State.S2, Event.Ev2, State.S1);
+ *          automaton.registerInitialization(State.S1);
+ *      }
+ *
+ *      ...
+ * }</pre>
+ * <h1>Event handling</h1>
+ * The automaton is able to handle events using the method {@link #acceptEvent(java.lang.Enum, java.lang.Object...)
+ * }. For instance,
+ * <pre>
+ *      private void doIt(){
+ *          automaton.acceptEvent(Event.Ev1);
+ *      }
+ * </pre>
+ * <h1>Notifications</h1>
+ * <br>It is possible to add property change listeners to be notified of state
+ * changes and/or event enabling, using {@link Automaton#addPropertyChangeListener(java.lang.String,
+ * java.beans.PropertyChangeListener)}. For state changes the property name is
+ * {@link Automaton#STATE_PROPERTY} and for event enabling, the property name is
+ * the result of the concatenation of the event name and a suffix
+ * {@link Automaton#ENABLED_SUFFIX} (for instance: <code>Ev1_enabled</code>).
+ * <h1>Actions</h1>
+ * It is possible to add actions in two different situations:
+ * <ul>
+ * <li>For the initialization of the automaton {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)
+ * }
+ * <li> When creating transitions {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)
+ * }
+ * </ul>
+ * Actions must implement the interface {@link fr.irit.ics.jautomaton.Action}
+ *
+ * <h1>Conditions</h1>
+ * It is possible to add conditions in two different situations:
+ * <ul>
+ * <li>For the initialization of the automaton (xase of multiple initial states)
+ * {@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
+ * <li> When creating transitions
+ * {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Precondition)}
+ * </ul>
+ * Conditions must implement the interface
+ * {@link fr.irit.ics.jautomaton.Precondition}
  *
  * @author David Navarre
+ *
  * @param <E> the enumeration set of accepted Event values
  * @param <S> the enumeration set of accepted State values
+ * @see fr.irit.ics.jautomaton.Action
+ * @see fr.irit.ics.jautomaton.Precondition
  */
 public final class Automaton<E extends Enum, S extends Enum> {
 
