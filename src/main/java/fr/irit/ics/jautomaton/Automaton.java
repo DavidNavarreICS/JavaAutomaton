@@ -95,9 +95,9 @@ import java.util.regex.Pattern;
  * <h1>Actions</h1>
  * It is possible to add actions in two different situations:
  * <ul>
- * <li>For the initialization of the automaton {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)
+ * <li>For the initialization of the automaton  {@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)
  * }
- * <li> When creating transitions {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)
+ * <li> When creating transitions  {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum, java.lang.Enum, fr.irit.ics.jautomaton.Action)
  * }
  * </ul>
  * Actions must implement the interface {@link fr.irit.ics.jautomaton.Action}
