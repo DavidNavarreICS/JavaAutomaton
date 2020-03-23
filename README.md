@@ -15,6 +15,9 @@ limitations under the License.
 -->
 # Java Automaton [master]
 
+SonarCloud:
+https://sonarcloud.io/dashboard?id=DavidNavarreICS_JavaAutomaton
+
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?branch=master&project=DavidNavarreICS_JavaAutomaton)](https://sonarcloud.io/dashboard?id=DavidNavarreICS_JavaAutomaton&branch=master)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?branch=master&project=DavidNavarreICS_JavaAutomaton&metric=bugs)](https://sonarcloud.io/dashboard?id=DavidNavarreICS_JavaAutomaton&branch=master)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?branch=master&project=DavidNavarreICS_JavaAutomaton&metric=code_smells)](https://sonarcloud.io/dashboard?id=DavidNavarreICS_JavaAutomaton&branch=master)
