@@ -16,8 +16,9 @@
 package fr.irit.ics.jautomaton;
 
 /**
+ * This interface must be implemented by any action used within an automaton. It allows any number of action parameters.
  *
- * @author David
+ * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  */
 public interface Action {
 

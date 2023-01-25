@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  *
- * @author navarre
+ * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  */
 public class AutomatonTest {
 

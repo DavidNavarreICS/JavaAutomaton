@@ -32,8 +32,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
- * This class allows the creation of simple automata based on the Mealy
- * notation.<br>It embeds means to create and handle:
+ * This class allows the creation of simple automata based on the Mealy notation.<br>It embeds means to create and
+ * handle:
  * <ul>
  * <li>States</li>
  * <li>Events</li>
@@ -41,10 +41,9 @@ import java.util.regex.Pattern;
  * <li>Actions on transitions</li>
  * </ul>
  * It embeds property change listening means as a notification mechanism too.
- * <h1>Build a simple Automaton</h1>
- * As an example, Fig.1 presents a simple automaton used to illustrate the
- * basics of the building and use of automata.<br>To build an automaton relies
- * on three methods:
+ * <h2>Build a simple Automaton</h2>
+ * As an example, Fig.1 presents a simple automaton used to illustrate the basics of the building and use of
+ * automata.<br>To build an automaton relies on three methods:
  * <ul>
  * <li> The constructor of the class
  * <li> The add transitions methods
@@ -58,8 +57,8 @@ import java.util.regex.Pattern;
  * <br>{@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
  * <br>{@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
  * </ul>
- * <center><img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton"><br>
- * <em>Fig.1 - Example of a simple automaton.</em><br></center>
+ * <img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton" style="text-align: justify; -moz-text-align-last: center; text-align-last: center;"><br>
+ * <em>Fig.1 - Example of a simple automaton.</em><br>
  * An automaton may be used as an attribute of any class.<br>
  * <pre>
  * public class MyApp {
@@ -81,7 +80,7 @@ import java.util.regex.Pattern;
  *
  *      ...
  * }</pre>
- * <h1>Event handling</h1>
+ * <h2>Event handling</h2>
  * The automaton is able to handle events using the method null {@link #acceptEvent(java.lang.Enum,
  * java.lang.Object...)}. For instance,
  * <pre>
@@ -89,14 +88,12 @@ import java.util.regex.Pattern;
  *          automaton.acceptEvent(Event.Ev1);
  *      }
  * </pre>
- * <h1>Notifications</h1>
- * <br>It is possible to add property change listeners to be notified of state
- * changes and/or event enabling, using {@link Automaton#addPropertyChangeListener(java.lang.String,
- * java.beans.PropertyChangeListener)}. For state changes the property name is
- * {@link Automaton#STATE_PROPERTY} and for event enabling, the property name is
- * the result of the concatenation of the event name and a suffix
+ * <h2>Notifications</h2>
+ * <br>It is possible to add property change listeners to be notified of state changes and/or event enabling, using {@link Automaton#addPropertyChangeListener(java.lang.String,
+ * java.beans.PropertyChangeListener)}. For state changes the property name is {@link Automaton#STATE_PROPERTY} and for
+ * event enabling, the property name is the result of the concatenation of the event name and a suffix
  * {@link Automaton#ENABLED_SUFFIX} (for instance: <code>Ev1_enabled</code>).
- * <h1>Actions</h1>
+ * <h2>Actions</h2>
  * It is possible to add actions in two different situations:
  * <ul>
  * <li>For the initialization of the automaton
@@ -108,8 +105,7 @@ import java.util.regex.Pattern;
  * }
  * </ul>
  * Actions must implement the interface {@link fr.irit.ics.jautomaton.Action}
- *
- * <h1>Conditions</h1>
+ * <h2>Conditions</h2>
  * It is possible to add conditions in two different situations:
  * <ul>
  * <li>For the initialization of the automaton (case of multiple initial states)
@@ -117,13 +113,13 @@ import java.util.regex.Pattern;
  * <li> When creating transitions null {@link Automaton#registerTransition(java.lang.Enum, java.lang.Enum,
  * java.lang.Enum, fr.irit.ics.jautomaton.Action, fr.irit.ics.jautomaton.Condition)}
  * </ul>
- * Conditions must implement the interface
- * {@link fr.irit.ics.jautomaton.Condition}
+ * Conditions must implement the interface {@link fr.irit.ics.jautomaton.Condition}
  *
- * @author David Navarre
+ * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  *
  * @param <E> the enumeration set of accepted Event values
  * @param <S> the enumeration set of accepted State values
+ *
  * @see fr.irit.ics.jautomaton.Action
  * @see fr.irit.ics.jautomaton.Condition
  */
@@ -177,8 +173,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     private final PropertyChangeSupport support;
     /**
-     * Stores a set of register that may be used by the automaton (for actions
-     * and/or conditions).
+     * Stores a set of register that may be used by the automaton (for actions and/or conditions).
      */
     private final Map<String, Object> registers;
     /**
@@ -215,8 +210,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             = "The initial state cannot be null";
 
     /**
-     * Build the base structure of an automaton based on a set of events and a
-     * set of states.
+     * Build the base structure of an automaton based on a set of events and a set of states.
      *
      * @param theEvents must be set containing at least one event.
      * @param theStates must be set containing at least one state.
@@ -244,12 +238,11 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Produces an error message when no state change is possible from the
-     * current state.
+     * Produces an error message when no state change is possible from the current state.
      *
-     * @param event the event that occured
-     * @param parameters the parameters used for condition and/or action
-     * computing
+     * @param event      the event that occured
+     * @param parameters the parameters used for condition and/or action computing
+     *
      * @return the error message
      */
     private String getErrorMessageNoPossibleStateChange(
@@ -262,10 +255,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Produces an error message used when an event is not allowed when the
-     * system is in the current state.
+     * Produces an error message used when an event is not allowed when the system is in the current state.
      *
      * @param event the event that occured
+     *
      * @return the error message
      */
     private String getErrorMessageEventNotAllowedInContext(final E event) {
@@ -277,10 +270,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Provides an error message used when attempting to create an already
-     * existing register.
+     * Provides an error message used when attempting to create an already existing register.
      *
      * @param name the name of the register
+     *
      * @return an error message
      */
     private static String getErrorMessageRegisterAlreadyExists(final String name) {
@@ -288,10 +281,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Provides an error message used when attempting to use an non-existing
-     * register.
+     * Provides an error message used when attempting to use an non-existing register.
      *
      * @param name the name of the register
+     *
      * @return an error message
      */
     private static String getErrorMessageRegisterDoesNotExist(final String name) {
@@ -302,6 +295,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Produces an error message used when the refister name is incorrect.
      *
      * @param name the name of the register
+     *
      * @return an error message
      */
     private static String getErrorMessageRegisterNameIncorrect(final String name) {
@@ -312,14 +306,13 @@ public final class Automaton<E extends Enum, S extends Enum> {
 
     /**
      * Try to go from the current state to the future state.
-     * <br>The future state is determined amongst a set of possible future
-     * states by checking some conditions (the conditions may be evaluated using
-     * object parameters).
+     * <br>The future state is determined amongst a set of possible future states by checking some conditions (the
+     * conditions may be evaluated using object parameters).
      *
-     * @param event the event that occured (only for notification purpose)
+     * @param event      the event that occured (only for notification purpose)
      * @param futurState the set of possible future states
-     * @param parameters the set of parameters used for evaluating the
-     * conditions and/or the execution of the corresponding action.
+     * @param parameters the set of parameters used for evaluating the conditions and/or the execution of the
+     *                   corresponding action.
      */
     private void tryStateChange(
             final E event,
@@ -349,11 +342,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * This methods is used after the corresponding event occured. The object
-     * parameters provided may be used for the evaluation of the condition
-     * and/or the execution of the action.
+     * This methods is used after the corresponding event occured. The object parameters provided may be used for the
+     * evaluation of the condition and/or the execution of the action.
      *
-     * @param event the event that has been triggered
+     * @param event      the event that has been triggered
      * @param parameters the parameters of both the condition and the action
      */
     public void acceptEvent(final E event, final Object... parameters) {
@@ -402,9 +394,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Returns the register value converted into a given type.
      *
-     * @param <T> the expected register value type
+     * @param <T>  the expected register value type
      * @param name the name of the register
      * @param type the class of type used for the convertion
+     *
      * @return the value of the register in the given type
      */
     public <T> T getRegisterValue(final String name, final Class<T> type) {
@@ -422,7 +415,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * Stes the value of a given register.
      *
-     * @param name the name of the register
+     * @param name  the name of the register
      * @param value the new value of this register
      */
     public void setRegisterValue(final String name, final Object value) {
@@ -450,15 +443,13 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Creates an initialization of the automaton by defining the initial state
-     * and the action to perform initially.
+     * Creates an initialization of the automaton by defining the initial state and the action to perform initially.
      *
-     * @param initialState the initial not null state
-     * @param initialAction the initial action (if null it is set to a void
-     * action
+     * @param initialState  the initial not null state
+     * @param initialAction the initial action (if null it is set to a void action
      */
     public void registerInitialization(final S initialState,
-            final Action initialAction) {
+                                       final Action initialAction) {
         LOG.log(Level.FINEST,
                 "Register Initialization with: {0}, {1}",
                 new Object[]{initialState, initialAction});
@@ -479,14 +470,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Registers a complex initialization where several initial states are
-     * possible according to some conditions. The three sets must be ordered.
+     * Registers a complex initialization where several initial states are possible according to some conditions. The
+     * three sets must be ordered.
      *
-     * @param initialStates the not empty set of possible initial states
-     * @param initialActions the initial set of actions action (if null it is
-     * set to a void action
-     * @param initialConditions the initial set of conditions (if null it is set
-     * to an always condition
+     * @param initialStates     the not empty set of possible initial states
+     * @param initialActions    the initial set of actions action (if null it is set to a void action
+     * @param initialConditions the initial set of conditions (if null it is set to an always condition
      */
     public void registerInitialization(
             final List<S> initialStates,
@@ -515,13 +504,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Registers the initialization process in the case of a single initial
-     * state.
+     * Registers the initialization process in the case of a single initial state.
      *
-     * @param initialActions the initial action (at most the first item of this
-     * list is used)
-     * @param initialStates the initial state (at most the first item of this
-     * list is used)
+     * @param initialActions the initial action (at most the first item of this list is used)
+     * @param initialStates  the initial state (at most the first item of this list is used)
      */
     private void registerSingleStateInitialization(
             final List<Action> initialActions,
@@ -540,11 +526,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Registers the initialization process in the case of multiple initial
-     * states.
+     * Registers the initialization process in the case of multiple initial states.
      *
-     * @param initialStates the non empty set of initial states
-     * @param initialActions a set of actions
+     * @param initialStates     the non empty set of initial states
+     * @param initialActions    a set of actions
      * @param initialConditions a set of conditions
      */
     private void registerMultipleStatesInitilization(
@@ -577,15 +562,14 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Adds a simple transition between two states that occurs according to a
-     * specified event.
+     * Adds a simple transition between two states that occurs according to a specified event.
      *
      * @param state1 the first state
-     * @param event the triggering event
+     * @param event  the triggering event
      * @param state2 the future state
      */
     public void registerTransition(final S state1, final E event,
-            final S state2) {
+                                   final S state2) {
         LOG.log(Level.FINEST,
                 "Registering new transition from State {0} to State {2} on Event {1}",
                 new Object[]{state1, event, state2});
@@ -593,16 +577,16 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Adds a transition between two states that occurs according to a specified
-     * event. When performing the transition, an action may be executed.
+     * Adds a transition between two states that occurs according to a specified event. When performing the transition,
+     * an action may be executed.
      *
      * @param state1 the first state
-     * @param event the triggering event
+     * @param event  the triggering event
      * @param state2 the future state
      * @param action the action to performed
      */
     public void registerTransition(final S state1, final E event,
-            final S state2, final Action action) {
+                                   final S state2, final Action action) {
         LOG.log(Level.FINEST,
                 "Registering new transition from State {0} to State {2} "
                 + "on Event {1} with execution of Action {3}",
@@ -612,20 +596,18 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Adds a transition between two states that occurs according to a specified
-     * event under some conditions. When performing the transition, an action
-     * may be executed.
+     * Adds a transition between two states that occurs according to a specified event under some conditions. When
+     * performing the transition, an action may be executed.
      *
-     * @param state1 the first state
-     * @param event the triggering event
-     * @param state2 the future state
-     * @param action the action to performed
-     * @param condition the conditions that must be verified to allow the
-     * transition
+     * @param state1    the first state
+     * @param event     the triggering event
+     * @param state2    the future state
+     * @param action    the action to performed
+     * @param condition the conditions that must be verified to allow the transition
      */
     public void registerTransition(final S state1, final E event,
-            final S state2, final Action action,
-            final Condition condition) {
+                                   final S state2, final Action action,
+                                   final Condition condition) {
         LOG.log(Level.FINEST,
                 "Registering new transition from State {0} to State {2} "
                 + "on Event {1} with execution of Action {3}, "
@@ -643,11 +625,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Forces the initialization of the automaton by providing some parameters
-     * that may be used to evaluate conditions and/or to execute actions.
+     * Forces the initialization of the automaton by providing some parameters that may be used to evaluate conditions
+     * and/or to execute actions.
      *
-     * @param parameters the possible object values used for condition and/or
-     * actions.
+     * @param parameters the possible object values used for condition and/or actions.
      */
     public void initialize(final Object... parameters) {
         LOG.log(Level.FINEST,
@@ -657,8 +638,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Really performs the state change. When performed, the event enabling is
-     * computed.
+     * Really performs the state change. When performed, the event enabling is computed.
      *
      * @param state the future state
      */
@@ -689,6 +669,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Provides the enabling of an event.
      *
      * @param event the event
+     *
      * @return trus if the event should be enabled
      */
     public boolean isEventEnabled(final E event) {
@@ -707,8 +688,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Registers a listener of any changes within the automaton.
      *
      * @param listener the new listener to be added
-     * @see
-     * java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
+     *
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(
             final PropertyChangeListener listener) {
@@ -723,9 +704,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Removes a listener.
      *
      * @param listener the new listener to be removed
-     * @see
-     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener)
-     * *
+     *
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener) *
      */
     public void removePropertyChangeListener(
             final PropertyChangeListener listener) {
@@ -740,9 +720,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Registers a listener of a particular state change within the automaton.
      *
      * @param propertyName the name of the property to listen to
-     * @param listener the new listener to be added
-     * @see
-     * java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
+     * @param listener     the new listener to be added
+     *
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
      * java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(
@@ -760,9 +740,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Removes a listener for a particular property.
      *
      * @param propertyName the name of the property that was listened to
-     * @param listener the new listener to be removed
-     * @see
-     * java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
+     * @param listener     the new listener to be removed
+     *
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
      * java.beans.PropertyChangeListener)
      */
     public void removePropertyChangeListener(
@@ -780,6 +760,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Provides the set of listeners of the automaton properties.
      *
      * @return the set of listeners
+     *
      * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners()
      */
     public PropertyChangeListener[] getPropertyChangeListeners() {
@@ -790,9 +771,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * Provides the set of listeners of an automaton particular property.
      *
      * @param propertyName the name of the listened property
+     *
      * @return the set of listeners
-     * @see
-     * java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
+     *
+     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
      */
     public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
         checkPropertyName(propertyName);
@@ -891,8 +873,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Verify if the property listened refers to a state change of to an event
-     * enabling change.
+     * Verify if the property listened refers to a state change of to an event enabling change.
      *
      * @param propertyName the property to listen to
      */

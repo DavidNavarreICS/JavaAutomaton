@@ -16,8 +16,10 @@
 package fr.irit.ics.jautomaton;
 
 /**
+ * This interface must be implemented by any condition within an automaton. It allows any number of contition
+ * parameters.
  *
- * @author David
+ * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  */
 public interface Condition {
 
@@ -25,8 +27,8 @@ public interface Condition {
      * Verify the condition.
      *
      * @param parameters the parameters
-     * @return <b>true</b> if the condition is verified according to the given
-     * parameters.
+     *
+     * @return <b>true</b> if the condition is verified according to the given parameters.
      */
     boolean isVerified(Object... parameters);
 }
