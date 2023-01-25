@@ -126,6 +126,43 @@ import java.util.regex.Pattern;
 public final class Automaton<E extends Enum, S extends Enum> {
 
     /**
+     * The event enabling property prefix, used for property change listening.
+     */
+    public static final String ENABLED_SUFFIX = "_enabled";
+    /**
+     * The state property prefix, used for property change listening.
+     */
+    public static final String STATE_PROPERTY = "state";
+    /**
+     * String that provides an error message.
+     */
+    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL
+            = "The initial state cannot be null";
+    /**
+     * Error message used when the set of events is empty.
+     */
+    private static final String ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY
+            = "The set of Events cannot be empty";
+    /**
+     * String that provides an error message.
+     */
+    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY
+            = "The set of initial states cannot be empty";
+    /**
+     * Error message used when the set of states is empty.
+     */
+    private static final String ERROR_SET_OF_STATES_CANNOT_BE_EMPTY
+            = "The set of States cannot be empty";
+    /**
+     * String used as a prefix for any event in any message.
+     */
+    private static final String EVENT_PREFIX = "Event ";
+    /**
+     * The class logger.
+     */
+    private static final Logger LOG = Logger.
+            getLogger(Automaton.class.getName());
+    /**
      * REGEX that must be followed by regiters names.
      */
     private static final String REGISTER_NAME_PATTERN_STRING = "[a-zA-Z]([a-zA-Z0-9_])*";
@@ -135,138 +172,23 @@ public final class Automaton<E extends Enum, S extends Enum> {
     private static final Pattern REGISTER_NAME_PATTERN
             = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
     /**
-     * Main data structure that contains any items defining the automaton.
-     */
-    private final Map<Pair<E, S>, Map<Condition, Pair<S, Action>>> dataStructure;
-    /**
-     * The state property prefix, used for property change listening.
-     */
-    public static final String STATE_PROPERTY = "state";
-    /**
-     * The event enabling property prefix, used for property change listening.
-     */
-    public static final String ENABLED_SUFFIX = "_enabled";
-    /**
-     * The class logger.
-     */
-    private static final Logger LOG = Logger.
-            getLogger(Automaton.class.getName());
-    /**
-     * The set of all allowed events.
-     */
-    private final Set<E> events;
-    /**
-     * The set of all allowed states.
-     */
-    private final Set<S> states;
-    /**
-     * Stores the current state value.
-     */
-    private S currentState;
-    /**
-     * Stores the description on the initial state.
-     * <br>Under some conditions, the initial state may vary.
-     */
-    private final Map<Condition, Pair<S, Action>> initialStateData;
-    /**
-     * Delegate that handles listeners for this automaton.
-     */
-    private final PropertyChangeSupport support;
-    /**
-     * Stores a set of register that may be used by the automaton (for actions and/or conditions).
-     */
-    private final Map<String, Object> registers;
-    /**
-     * Error message used when the set of states is empty.
-     */
-    private static final String ERROR_SET_OF_STATES_CANNOT_BE_EMPTY
-            = "The set of States cannot be empty";
-    /**
-     * Error message used when the set of events is empty.
-     */
-    private static final String ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY
-            = "The set of Events cannot be empty";
-    /**
-     * String used as a prefix for any state in any message.
-     */
-    private static final String STATE_PREFIX = "State ";
-    /**
-     * String used as a prefix for any event in any message.
-     */
-    private static final String EVENT_PREFIX = "Event ";
-    /**
      * String used as a prefix for any register in any message.
      */
     private static final String REGISTER_PREFIX = "Register ";
     /**
-     * String that provides an error message.
+     * String used as a prefix for any state in any message.
      */
-    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY
-            = "The set of initial states cannot be empty";
-    /**
-     * String that provides an error message.
-     */
-    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL
-            = "The initial state cannot be null";
+    private static final String STATE_PREFIX = "State ";
 
     /**
-     * Build the base structure of an automaton based on a set of events and a set of states.
+     * Verifies that the provided listener is not null.
      *
-     * @param theEvents must be set containing at least one event.
-     * @param theStates must be set containing at least one state.
+     * @param listener the concerned listener
      */
-    public Automaton(final Set<E> theEvents, final Set<S> theStates) {
-        LOG.log(Level.FINEST,
-                "Creating automaton with States={0} and Events={1}",
-                new Object[]{theStates, theEvents});
-        if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
-            LOG.log(Level.SEVERE, ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
-            throw new IllegalArgumentException(
-                    ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
+    private static void checkListener(PropertyChangeListener listener) {
+        if (Objects.isNull(listener)) {
+            throw new IllegalArgumentException("The added listener cannot be null");
         }
-        if (Objects.isNull(theStates) || theStates.isEmpty()) {
-            LOG.log(Level.SEVERE, ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
-            throw new IllegalArgumentException(
-                    ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
-        }
-        this.events = Collections.unmodifiableSet(theEvents);
-        this.states = Collections.unmodifiableSet(theStates);
-        dataStructure = new HashMap<>();
-        initialStateData = new HashMap<>();
-        support = new PropertyChangeSupport(this);
-        registers = new HashMap<>();
-    }
-
-    /**
-     * Produces an error message when no state change is possible from the current state.
-     *
-     * @param event      the event that occured
-     * @param parameters the parameters used for condition and/or action computing
-     *
-     * @return the error message
-     */
-    private String getErrorMessageNoPossibleStateChange(
-            final E event,
-            final Object... parameters) {
-        return "No state change possible with parameters "
-                + Arrays.deepToString(parameters)
-                + " for " + EVENT_PREFIX + event
-                + " from " + STATE_PREFIX + currentState;
-    }
-
-    /**
-     * Produces an error message used when an event is not allowed when the system is in the current state.
-     *
-     * @param event the event that occured
-     *
-     * @return the error message
-     */
-    private String getErrorMessageEventNotAllowedInContext(final E event) {
-        return EVENT_PREFIX
-                + event
-                + " is not allowed in "
-                + STATE_PREFIX
-                + currentState;
     }
 
     /**
@@ -303,42 +225,62 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 + "\nName must fit "
                 + REGISTER_NAME_PATTERN_STRING;
     }
+    /**
+     * Stores the current state value.
+     */
+    private S currentState;
+    /**
+     * Main data structure that contains any items defining the automaton.
+     */
+    private final Map<Pair<E, S>, Map<Condition, Pair<S, Action>>> dataStructure;
+    /**
+     * The set of all allowed events.
+     */
+    private final Set<E> events;
+    /**
+     * Stores the description on the initial state.
+     * <br>Under some conditions, the initial state may vary.
+     */
+    private final Map<Condition, Pair<S, Action>> initialStateData;
+    /**
+     * Stores a set of register that may be used by the automaton (for actions and/or conditions).
+     */
+    private final Map<String, Object> registers;
+    /**
+     * The set of all allowed states.
+     */
+    private final Set<S> states;
+    /**
+     * Delegate that handles listeners for this automaton.
+     */
+    private final PropertyChangeSupport support;
 
     /**
-     * Try to go from the current state to the future state.
-     * <br>The future state is determined amongst a set of possible future states by checking some conditions (the
-     * conditions may be evaluated using object parameters).
+     * Build the base structure of an automaton based on a set of events and a set of states.
      *
-     * @param event      the event that occured (only for notification purpose)
-     * @param futurState the set of possible future states
-     * @param parameters the set of parameters used for evaluating the conditions and/or the execution of the
-     *                   corresponding action.
+     * @param theEvents must be set containing at least one event.
+     * @param theStates must be set containing at least one state.
      */
-    private void tryStateChange(
-            final E event,
-            final Map<Condition, Pair<S, Action>> futurState,
-            final Object... parameters) {
-        boolean foundState = false;
-        for (Map.Entry<Condition, Pair<S, Action>> entry : futurState.
-                entrySet()) {
-            LOG.log(Level.FINEST, "Trying condition: {0}", entry.getKey());
-            if (entry.getKey().isVerified(parameters)) {
-                LOG.log(Level.FINEST,
-                        "Condition: {0} is verified, going to state {1}",
-                        new Object[]{entry.getKey(), entry.getValue().getFirst()});
-                goToState(entry.getValue().getFirst());
-                entry.getValue().getSecond().execute(parameters);
-                foundState = true;
-                break;
-            }
-        }
-        if (!foundState) {
-            LOG.log(
-                    Level.SEVERE,
-                    getErrorMessageNoPossibleStateChange(event, parameters));
+    public Automaton(final Set<E> theEvents, final Set<S> theStates) {
+        LOG.log(Level.FINEST,
+                "Creating automaton with States={0} and Events={1}",
+                new Object[]{theStates, theEvents});
+        if (Objects.isNull(theEvents) || theEvents.isEmpty()) {
+            LOG.log(Level.SEVERE, ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
             throw new IllegalArgumentException(
-                    getErrorMessageNoPossibleStateChange(event, parameters));
+                    ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY);
         }
+        if (Objects.isNull(theStates) || theStates.isEmpty()) {
+            LOG.log(Level.SEVERE, ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
+            throw new IllegalArgumentException(
+                    ERROR_SET_OF_STATES_CANNOT_BE_EMPTY);
+        }
+        this.events = Collections.unmodifiableSet(theEvents);
+        this.states = Collections.unmodifiableSet(theStates);
+        dataStructure = new HashMap<>();
+        initialStateData = new HashMap<>();
+        support = new PropertyChangeSupport(this);
+        registers = new HashMap<>();
     }
 
     /**
@@ -348,7 +290,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param event      the event that has been triggered
      * @param parameters the parameters of both the condition and the action
      */
-    public void acceptEvent(final E event, final Object... parameters) {
+    public void acceptEvent(final E event, final List<Object> parameters) {
         LOG.log(Level.FINEST,
                 "Accepting Event {0} with parameters {1}",
                 new Object[]{event, parameters});
@@ -365,6 +307,51 @@ public final class Automaton<E extends Enum, S extends Enum> {
             throw new IllegalStateException(
                     getErrorMessageEventNotAllowedInContext(event));
         }
+    }
+
+    /**
+     * This methods is used after the corresponding event occured.
+     *
+     * @param event the event that has been triggered
+     */
+    public void acceptEvent(final E event) {
+        this.acceptEvent(event, null);
+    }
+
+    /**
+     * Registers a listener of any changes within the automaton.
+     *
+     * @param listener the new listener to be added
+     *
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(
+            final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Registering Listener {0}",
+                new Object[]{listener});
+        checkListener(listener);
+        support.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Registers a listener of a particular state change within the automaton.
+     *
+     * @param propertyName the name of the property to listen to
+     * @param listener     the new listener to be added
+     *
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
+     * java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(
+            final String propertyName,
+            final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Registering Listener {0} for Property {1}",
+                new Object[]{listener, propertyName});
+        checkPropertyName(propertyName);
+        checkListener(listener);
+        support.addPropertyChangeListener(propertyName, listener);
     }
 
     /**
@@ -392,6 +379,40 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
+     * Provides the state in which the automaton is.
+     *
+     * @return the current state
+     */
+    public S getCurrentState() {
+        return currentState;
+    }
+
+    /**
+     * Provides the set of listeners of the automaton properties.
+     *
+     * @return the set of listeners
+     *
+     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners()
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners() {
+        return support.getPropertyChangeListeners();
+    }
+
+    /**
+     * Provides the set of listeners of an automaton particular property.
+     *
+     * @param propertyName the name of the listened property
+     *
+     * @return the set of listeners
+     *
+     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+        checkPropertyName(propertyName);
+        return support.getPropertyChangeListeners(propertyName);
+    }
+
+    /**
      * Returns the register value converted into a given type.
      *
      * @param <T>  the expected register value type
@@ -413,21 +434,43 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Stes the value of a given register.
+     * Forces the initialization of the automaton by providing some parameters that may be used to evaluate conditions
+     * and/or to execute actions.
      *
-     * @param name  the name of the register
-     * @param value the new value of this register
+     * @param parameters the possible object values used for condition and/or actions.
      */
-    public void setRegisterValue(final String name, final Object value) {
+    public void initialize(final List<Object> parameters) {
         LOG.log(Level.FINEST,
-                "Setting value of the register {0} = {1}",
-                new Object[]{name, value});
-        if (!registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
-            throw new IllegalArgumentException(
-                    getErrorMessageRegisterDoesNotExist(name));
+                "Initializing with parameters: {0}",
+                new Object[]{parameters});
+        tryStateChange(null, initialStateData, parameters);
+    }
+
+    /**
+     * Forces the initialization of the automaton without parameters that may be used to evaluate conditions and/or to
+     * execute actions.
+     */
+    public void initialize() {
+        this.initialize(null);
+    }
+
+    /**
+     * Provides the enabling of an event.
+     *
+     * @param event the event
+     *
+     * @return trus if the event should be enabled
+     */
+    public boolean isEventEnabled(final E event) {
+        LOG.log(Level.FINEST,
+                "Providing enabling of Event {0} in State {1}",
+                new Object[]{event, currentState});
+        if (Objects.isNull(currentState)) {
+            return false;
         }
-        registers.put(name, value);
+        return (dataStructure.keySet().stream()
+                .anyMatch((Pair<E, S> pair) -> (currentState.equals(pair.getSecond())
+                && pair.getFirst().equals(event))));
     }
 
     /**
@@ -504,64 +547,6 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Registers the initialization process in the case of a single initial state.
-     *
-     * @param initialActions the initial action (at most the first item of this list is used)
-     * @param initialStates  the initial state (at most the first item of this list is used)
-     */
-    private void registerSingleStateInitialization(
-            final List<Action> initialActions,
-            final List<S> initialStates) {
-        LOG.log(Level.FINEST,
-                "Register single state initialisation with: {0}, {1}",
-                new Object[]{initialActions, initialStates});
-        final Action action;
-        if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
-            action = NullAction.getInstance();
-        } else {
-            action = initialActions.get(0);
-        }
-        initialStateData.put(TrueCondition.getInstance(),
-                new Pair<>(initialStates.get(0), action));
-    }
-
-    /**
-     * Registers the initialization process in the case of multiple initial states.
-     *
-     * @param initialStates     the non empty set of initial states
-     * @param initialActions    a set of actions
-     * @param initialConditions a set of conditions
-     */
-    private void registerMultipleStatesInitilization(
-            final List<S> initialStates,
-            final List<Action> initialActions,
-            final List<Condition> initialConditions) {
-        LOG.log(Level.FINEST,
-                "Register multiple state initialisation with: {0}, {1}, {2}",
-                new Object[]{initialStates, initialActions, initialStates});
-        for (int i = 0; i < initialStates.size(); i++) {
-            final S initialState = initialStates.get(i);
-            final Action action;
-            final Condition condition;
-            if (Objects.isNull(initialActions)) {
-                action = NullAction.getInstance();
-            } else if (initialActions.size() < i + 1) {
-                action = NullAction.getInstance();
-            } else {
-                action = initialActions.get(i);
-            }
-            if (Objects.isNull(initialConditions)
-                    || initialConditions.size() < i + 1) {
-                condition = TrueCondition.getInstance();
-            } else {
-                condition = initialConditions.get(i);
-            }
-            initialStateData.put(condition, new Pair<>(initialState,
-                    action));
-        }
-    }
-
-    /**
      * Adds a simple transition between two states that occurs according to a specified event.
      *
      * @param state1 the first state
@@ -625,16 +610,126 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Forces the initialization of the automaton by providing some parameters that may be used to evaluate conditions
-     * and/or to execute actions.
+     * Removes a listener.
      *
-     * @param parameters the possible object values used for condition and/or actions.
+     * @param listener the new listener to be removed
+     *
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener) *
      */
-    public void initialize(final Object... parameters) {
+    public void removePropertyChangeListener(
+            final PropertyChangeListener listener) {
         LOG.log(Level.FINEST,
-                "Initializing with parameters: {0}",
-                new Object[]{parameters});
-        tryStateChange(null, initialStateData, parameters);
+                "Removing Listener {0}",
+                new Object[]{listener});
+        checkListener(listener);
+        support.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * Removes a listener for a particular property.
+     *
+     * @param propertyName the name of the property that was listened to
+     * @param listener     the new listener to be removed
+     *
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
+     * java.beans.PropertyChangeListener)
+     */
+    public void removePropertyChangeListener(
+            final String propertyName,
+            final PropertyChangeListener listener) {
+        LOG.log(Level.FINEST,
+                "Removing Listener {0} from Property {1}",
+                new Object[]{listener, propertyName});
+        checkPropertyName(propertyName);
+        checkListener(listener);
+        support.removePropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     * Stes the value of a given register.
+     *
+     * @param name  the name of the register
+     * @param value the new value of this register
+     */
+    public void setRegisterValue(final String name, final Object value) {
+        LOG.log(Level.FINEST,
+                "Setting value of the register {0} = {1}",
+                new Object[]{name, value});
+        if (!registers.containsKey(name)) {
+            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
+            throw new IllegalArgumentException(
+                    getErrorMessageRegisterDoesNotExist(name));
+        }
+        registers.put(name, value);
+    }
+
+    @Override
+    public String toString() {
+        String toString = "Initial State: " + initialStateData.values() + "\n";
+        for (S state : states) {
+            toString = dataStructure.
+                    entrySet().stream()
+                    .filter((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
+                            -> (entry.getKey().getSecond().equals(state)))
+                    .map((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
+                            -> state
+                    + "=>" + entry.getKey().getFirst()
+                    + "=>" + entry.getValue().values()
+                    + "\n")
+                    .reduce(toString, String::concat);
+        }
+        return toString;
+    }
+
+    /**
+     * Verify if the property listened refers to a state change of to an event enabling change.
+     *
+     * @param propertyName the property to listen to
+     */
+    private void checkPropertyName(String propertyName) {
+        boolean isCorrect = STATE_PROPERTY.equals(propertyName);
+        for (E event : events) {
+            final String expected = event.toString() + ENABLED_SUFFIX;
+            if (expected.equals(propertyName)) {
+                isCorrect = true;
+            }
+        }
+        if (!isCorrect) {
+            throw new IllegalArgumentException(
+                    "The name of the property to listen to should be 'state' or <anyEvent>_enabled");
+        }
+    }
+
+    /**
+     * Produces an error message used when an event is not allowed when the system is in the current state.
+     *
+     * @param event the event that occured
+     *
+     * @return the error message
+     */
+    private String getErrorMessageEventNotAllowedInContext(final E event) {
+        return EVENT_PREFIX
+                + event
+                + " is not allowed in "
+                + STATE_PREFIX
+                + currentState;
+    }
+
+    /**
+     * Produces an error message when no state change is possible from the current state.
+     *
+     * @param event      the event that occured
+     * @param parameters the parameters used for condition and/or action computing
+     *
+     * @return the error message
+     */
+    private String getErrorMessageNoPossibleStateChange(
+            final E event,
+            final Object... parameters) {
+        return "No state change possible with parameters "
+                + Arrays.deepToString(parameters)
+                + " for " + EVENT_PREFIX + event
+                + " from " + STATE_PREFIX + currentState;
     }
 
     /**
@@ -666,146 +761,98 @@ public final class Automaton<E extends Enum, S extends Enum> {
     }
 
     /**
-     * Provides the enabling of an event.
+     * Registers the initialization process in the case of multiple initial states.
      *
-     * @param event the event
-     *
-     * @return trus if the event should be enabled
+     * @param initialStates     the non empty set of initial states
+     * @param initialActions    a set of actions
+     * @param initialConditions a set of conditions
      */
-    public boolean isEventEnabled(final E event) {
+    private void registerMultipleStatesInitilization(
+            final List<S> initialStates,
+            final List<Action> initialActions,
+            final List<Condition> initialConditions) {
         LOG.log(Level.FINEST,
-                "Providing enabling of Event {0} in State {1}",
-                new Object[]{event, currentState});
-        if (Objects.isNull(currentState)) {
-            return false;
+                "Register multiple state initialisation with: {0}, {1}, {2}",
+                new Object[]{initialStates, initialActions, initialStates});
+        for (int i = 0; i < initialStates.size(); i++) {
+            final S initialState = initialStates.get(i);
+            final Action action;
+            final Condition condition;
+            if (Objects.isNull(initialActions)) {
+                action = NullAction.getInstance();
+            } else if (initialActions.size() < i + 1) {
+                action = NullAction.getInstance();
+            } else {
+                action = initialActions.get(i);
+            }
+            if (Objects.isNull(initialConditions)
+                    || initialConditions.size() < i + 1) {
+                condition = TrueCondition.getInstance();
+            } else {
+                condition = initialConditions.get(i);
+            }
+            initialStateData.put(condition, new Pair<>(initialState,
+                    action));
         }
-        return (dataStructure.keySet().stream()
-                .anyMatch((Pair<E, S> pair) -> (currentState.equals(pair.getSecond())
-                && pair.getFirst().equals(event))));
     }
 
     /**
-     * Registers a listener of any changes within the automaton.
+     * Registers the initialization process in the case of a single initial state.
      *
-     * @param listener the new listener to be added
-     *
-     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.beans.PropertyChangeListener)
+     * @param initialActions the initial action (at most the first item of this list is used)
+     * @param initialStates  the initial state (at most the first item of this list is used)
      */
-    public void addPropertyChangeListener(
-            final PropertyChangeListener listener) {
+    private void registerSingleStateInitialization(
+            final List<Action> initialActions,
+            final List<S> initialStates) {
         LOG.log(Level.FINEST,
-                "Registering Listener {0}",
-                new Object[]{listener});
-        checkListener(listener);
-        support.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * Removes a listener.
-     *
-     * @param listener the new listener to be removed
-     *
-     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.beans.PropertyChangeListener) *
-     */
-    public void removePropertyChangeListener(
-            final PropertyChangeListener listener) {
-        LOG.log(Level.FINEST,
-                "Removing Listener {0}",
-                new Object[]{listener});
-        checkListener(listener);
-        support.removePropertyChangeListener(listener);
-    }
-
-    /**
-     * Registers a listener of a particular state change within the automaton.
-     *
-     * @param propertyName the name of the property to listen to
-     * @param listener     the new listener to be added
-     *
-     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
-     * java.beans.PropertyChangeListener)
-     */
-    public void addPropertyChangeListener(
-            final String propertyName,
-            final PropertyChangeListener listener) {
-        LOG.log(Level.FINEST,
-                "Registering Listener {0} for Property {1}",
-                new Object[]{listener, propertyName});
-        checkPropertyName(propertyName);
-        checkListener(listener);
-        support.addPropertyChangeListener(propertyName, listener);
-    }
-
-    /**
-     * Removes a listener for a particular property.
-     *
-     * @param propertyName the name of the property that was listened to
-     * @param listener     the new listener to be removed
-     *
-     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
-     * java.beans.PropertyChangeListener)
-     */
-    public void removePropertyChangeListener(
-            final String propertyName,
-            final PropertyChangeListener listener) {
-        LOG.log(Level.FINEST,
-                "Removing Listener {0} from Property {1}",
-                new Object[]{listener, propertyName});
-        checkPropertyName(propertyName);
-        checkListener(listener);
-        support.removePropertyChangeListener(propertyName, listener);
-    }
-
-    /**
-     * Provides the set of listeners of the automaton properties.
-     *
-     * @return the set of listeners
-     *
-     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners()
-     */
-    public PropertyChangeListener[] getPropertyChangeListeners() {
-        return support.getPropertyChangeListeners();
-    }
-
-    /**
-     * Provides the set of listeners of an automaton particular property.
-     *
-     * @param propertyName the name of the listened property
-     *
-     * @return the set of listeners
-     *
-     * @see java.beans.PropertyChangeSupport#getPropertyChangeListeners(java.lang.String)
-     */
-    public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
-        checkPropertyName(propertyName);
-        return support.getPropertyChangeListeners(propertyName);
-    }
-
-    @Override
-    public String toString() {
-        String toString = "Initial State: " + initialStateData.values() + "\n";
-        for (S state : states) {
-            toString = dataStructure.
-                    entrySet().stream()
-                    .filter((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
-                            -> (entry.getKey().getSecond().equals(state)))
-                    .map((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
-                            -> state
-                    + "=>" + entry.getKey().getFirst()
-                    + "=>" + entry.getValue().values()
-                    + "\n")
-                    .reduce(toString, String::concat);
+                "Register single state initialisation with: {0}, {1}",
+                new Object[]{initialActions, initialStates});
+        final Action action;
+        if (Objects.isNull(initialActions) || initialActions.isEmpty()) {
+            action = NullAction.getInstance();
+        } else {
+            action = initialActions.get(0);
         }
-        return toString;
+        initialStateData.put(TrueCondition.getInstance(),
+                new Pair<>(initialStates.get(0), action));
     }
 
     /**
-     * Provides the state in which the automaton is.
+     * Try to go from the current state to the future state.
+     * <br>The future state is determined amongst a set of possible future states by checking some conditions (the
+     * conditions may be evaluated using object parameters).
      *
-     * @return the current state
+     * @param event      the event that occured (only for notification purpose)
+     * @param futurState the set of possible future states
+     * @param parameters the set of parameters used for evaluating the conditions and/or the execution of the
+     *                   corresponding action.
      */
-    public S getCurrentState() {
-        return currentState;
+    private void tryStateChange(
+            final E event,
+            final Map<Condition, Pair<S, Action>> futurState,
+            final List<Object> parameters) {
+        boolean foundState = false;
+        for (Map.Entry<Condition, Pair<S, Action>> entry : futurState.
+                entrySet()) {
+            LOG.log(Level.FINEST, "Trying condition: {0}", entry.getKey());
+            if (entry.getKey().isVerified(parameters)) {
+                LOG.log(Level.FINEST,
+                        "Condition: {0} is verified, going to state {1}",
+                        new Object[]{entry.getKey(), entry.getValue().getFirst()});
+                goToState(entry.getValue().getFirst());
+                entry.getValue().getSecond().execute(parameters);
+                foundState = true;
+                break;
+            }
+        }
+        if (!foundState) {
+            LOG.log(
+                    Level.SEVERE,
+                    getErrorMessageNoPossibleStateChange(event, parameters));
+            throw new IllegalArgumentException(
+                    getErrorMessageNoPossibleStateChange(event, parameters));
+        }
     }
 
     /**
@@ -835,7 +882,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
 
         @Override
-        public void execute(final Object... parameters) {
+        public void execute(final List<Object> parameters) {
             //Do nothing.
         }
     }
@@ -867,38 +914,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
 
         @Override
-        public boolean isVerified(final Object... parameters) {
+        public boolean isVerified(final List<Object> parameters) {
             return true;
         }
     }
 
-    /**
-     * Verify if the property listened refers to a state change of to an event enabling change.
-     *
-     * @param propertyName the property to listen to
-     */
-    private void checkPropertyName(String propertyName) {
-        boolean isCorrect = STATE_PROPERTY.equals(propertyName);
-        for (E event : events) {
-            final String expected = event.toString() + ENABLED_SUFFIX;
-            if (expected.equals(propertyName)) {
-                isCorrect = true;
-            }
-        }
-        if (!isCorrect) {
-            throw new IllegalArgumentException(
-                    "The name of the property to listen to should be 'state' or <anyEvent>_enabled");
-        }
-    }
-
-    /**
-     * Verifies that the provided listener is not null.
-     *
-     * @param listener the concerned listener
-     */
-    private static void checkListener(PropertyChangeListener listener) {
-        if (Objects.isNull(listener)) {
-            throw new IllegalArgumentException("The added listener cannot be null");
-        }
-    }
 }

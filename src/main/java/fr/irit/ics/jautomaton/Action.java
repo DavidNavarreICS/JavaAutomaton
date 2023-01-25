@@ -15,6 +15,8 @@
  */
 package fr.irit.ics.jautomaton;
 
+import java.util.List;
+
 /**
  * This interface must be implemented by any action used within an automaton. It allows any number of action parameters.
  *
@@ -27,5 +29,5 @@ public interface Action {
      *
      * @param parameters the parameters.
      */
-    void execute(Object... parameters);
+    void execute(List<Object> parameters);
 }

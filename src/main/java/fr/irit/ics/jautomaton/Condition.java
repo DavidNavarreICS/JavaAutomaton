@@ -15,6 +15,8 @@
  */
 package fr.irit.ics.jautomaton;
 
+import java.util.List;
+
 /**
  * This interface must be implemented by any condition within an automaton. It allows any number of contition
  * parameters.
@@ -30,5 +32,5 @@ public interface Condition {
      *
      * @return <b>true</b> if the condition is verified according to the given parameters.
      */
-    boolean isVerified(Object... parameters);
+    boolean isVerified(List<Object> parameters);
 }
