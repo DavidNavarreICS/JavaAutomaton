@@ -82,8 +82,8 @@ import java.util.regex.Pattern;
  *      ...
  * }</pre>
  * <h2>Event handling</h2>
- * The automaton is able to handle events using the method null {@link #acceptEvent(java.lang.Enum,
- * java.lang.Object...)}. For instance,
+ * The automaton is able to handle events using the method {@link #acceptEvent(java.lang.Enum)} or
+ * {@link #acceptEvent(java.lang.Enum, java.util.List)}. For instance,
  * <pre>
  *      private void doIt(){
  *          automaton.acceptEvent(Event.Ev1);
