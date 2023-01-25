@@ -19,7 +19,6 @@ import fr.irit.ics.jautomaton.utils.Pair;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -725,9 +724,9 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     private String getErrorMessageNoPossibleStateChange(
             final E event,
-            final Object... parameters) {
+            final List<Object> parameters) {
         return "No state change possible with parameters "
-                + Arrays.deepToString(parameters)
+                + (parameters)
                 + " for " + EVENT_PREFIX + event
                 + " from " + STATE_PREFIX + currentState;
     }
@@ -741,7 +740,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
         LOG.log(Level.FINEST,
                 "Going to State {0}",
                 new Object[]{state});
-        S oldState = currentState;
+        var oldState = currentState;
         currentState = state;
         final Set<E> oldEnableEvents = new HashSet<>(events.size());
         dataStructure.keySet().stream()
@@ -774,8 +773,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
         LOG.log(Level.FINEST,
                 "Register multiple state initialisation with: {0}, {1}, {2}",
                 new Object[]{initialStates, initialActions, initialStates});
-        for (int i = 0; i < initialStates.size(); i++) {
-            final S initialState = initialStates.get(i);
+        for (var i = 0; i < initialStates.size(); i++) {
+            final var initialState = initialStates.get(i);
             final Action action;
             final Condition condition;
             if (Objects.isNull(initialActions)) {
@@ -832,7 +831,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final E event,
             final Map<Condition, Pair<S, Action>> futurState,
             final List<Object> parameters) {
-        boolean foundState = false;
+        var foundState = false;
         for (Map.Entry<Condition, Pair<S, Action>> entry : futurState.
                 entrySet()) {
             LOG.log(Level.FINEST, "Trying condition: {0}", entry.getKey());
