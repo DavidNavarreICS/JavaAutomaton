@@ -23,9 +23,9 @@ import org.junit.jupiter.api.Test;
  *
  * @author David Navarre.
  */
-public class PairTest {
+class PairTest {
 
-    public PairTest() {
+    PairTest() {
     }
 
     private static final int DEFAULT_FIRST_ELEMENT = 0;
@@ -42,7 +42,7 @@ public class PairTest {
     }
 
     @Test
-    public void testGetFirstIsSame() {
+    void testGetFirstIsSame() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.getFirst();
         Integer expected = DEFAULT_FIRST_ELEMENT;
@@ -50,7 +50,7 @@ public class PairTest {
     }
 
     @Test
-    public void testGetSecondIsSame() {
+    void testGetSecondIsSame() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.getSecond();
         Integer expected = DEFAULT_SECOND_ELEMENT;
@@ -58,7 +58,7 @@ public class PairTest {
     }
 
     @Test
-    public void testHashCodeNotNull() {
+    void testHashCodeNotNull() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.hashCode();
         Integer notExpected = 0;
@@ -66,7 +66,7 @@ public class PairTest {
     }
 
     @Test
-    public void testEqualsOtherPairIsSame() {
+    void testEqualsOtherPairIsSame() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair();
         Boolean result1 = aPair1.equals(aPair2);
@@ -76,7 +76,7 @@ public class PairTest {
     }
 
     @Test
-    public void testEqualsOtherPairFirstElementIsDifferent() {
+    void testEqualsOtherPairFirstElementIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair(DEFAULT_DIFFERENT_FIRST_ELEMENT, DEFAULT_SECOND_ELEMENT);
         Boolean result1 = aPair1.equals(aPair2);
@@ -86,7 +86,7 @@ public class PairTest {
     }
 
     @Test
-    public void testEqualsOtherPairSecondElementIsDifferent() {
+    void testEqualsOtherPairSecondElementIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair(DEFAULT_FIRST_ELEMENT, DEFAULT_DIFFERENT_SECOND_ELEMENT);
         Boolean result1 = aPair1.equals(aPair2);
@@ -96,7 +96,7 @@ public class PairTest {
     }
 
     @Test
-    public void testEqualsOtherClassIsDifferent() {
+    void testEqualsOtherClassIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Object aPair2 = new Object();
         Boolean result1 = aPair1.equals(aPair2);
@@ -104,7 +104,7 @@ public class PairTest {
     }
 
     @Test
-    public void testEqualsNullObjectIsDifferent() {
+    void testEqualsNullObjectIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Object aPair2 = null;
         Boolean result1 = aPair1.equals(aPair2);
@@ -112,7 +112,7 @@ public class PairTest {
     }
 
     @Test
-    public void testToStringNotNull() {
+    void testToStringNotNull() {
         Pair<Integer, Integer> aPair = getNewPair();
         String result = aPair.toString();
         Boolean analyzed = Objects.nonNull(result);
@@ -120,7 +120,7 @@ public class PairTest {
     }
 
     @Test
-    public void testToStringNotEmpty() {
+    void testToStringNotEmpty() {
         Pair<Integer, Integer> aPair = getNewPair();
         String result = aPair.toString();
         Boolean analyzed = !result.isEmpty();

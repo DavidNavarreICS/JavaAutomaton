@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class S3CornerCasesTest extends AbstractCornerCasesTest {
 
     public static Stream<TestConfiguration.Event> data() {
-        return Stream.of(TestConfiguration.Event.CB3);
+        return Stream.of(TestConfiguration.Event.CB1, TestConfiguration.Event.CB2, TestConfiguration.Event.CB4);
     }
 
     @Override

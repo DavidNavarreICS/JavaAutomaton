@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author David Navarre
  */
-public class NominalTest {
+class NominalTest {
 
     private Automaton<Event, State>
             getAutomatonAfterSequence(List<Event> queue) {
@@ -40,7 +40,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testInitialState() {
+    void testInitialState() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Collections.EMPTY_LIST);
         State state = automaton.getCurrentState();
         State expected = State.S1;
@@ -48,7 +48,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS1CB1() {
+    void testS1CB1() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1));
         State state = automaton.getCurrentState();
         State expected = State.S2;
@@ -56,7 +56,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS1CB2() {
+    void testS1CB2() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB2));
         State state = automaton.getCurrentState();
         State expected = State.S3;
@@ -64,7 +64,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS2CB1() {
+    void testS2CB1() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB1));
         State state = automaton.getCurrentState();
         State expected = State.S2;
@@ -72,7 +72,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS2CB2() {
+    void testS2CB2() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2));
         State state = automaton.getCurrentState();
         State expected = State.S4;
@@ -80,7 +80,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS3CB1() {
+    void testS3CB1() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB2, Event.CB1));
         State state = automaton.getCurrentState();
         State expected = State.S4;
@@ -88,7 +88,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS3CB2() {
+    void testS3CB2() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB2, Event.CB2));
         State state = automaton.getCurrentState();
         State expected = State.S3;
@@ -96,7 +96,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS4CB3() {
+    void testS4CB3() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3));
         State state = automaton.getCurrentState();
         State expected = State.S5;
@@ -104,7 +104,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS4CB4() {
+    void testS4CB4() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB4));
         State state = automaton.getCurrentState();
         State expected = State.S6;
@@ -112,7 +112,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS5CB3() {
+    void testS5CB3() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3,
                 Event.CB3));
         State state = automaton.getCurrentState();
@@ -121,7 +121,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS5CB4() {
+    void testS5CB4() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3,
                 Event.CB4));
         State state = automaton.getCurrentState();
@@ -130,7 +130,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS6CB3() {
+    void testS6CB3() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB4,
                 Event.CB3));
         State state = automaton.getCurrentState();
@@ -139,7 +139,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testS6CB4() {
+    void testS6CB4() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB4,
                 Event.CB4));
         State state = automaton.getCurrentState();

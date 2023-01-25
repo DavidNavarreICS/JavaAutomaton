@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author David Navarre
  */
-public class NominalTest {
+class NominalTest {
 
     private Automaton<Event, State>
             getAutomatonAfterSequence(List<Event> queue) {
@@ -40,7 +40,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testInitialState() {
+    void testInitialState() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Collections.EMPTY_LIST);
         State state = automaton.getCurrentState();
         State expected = State.S1;
@@ -48,7 +48,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testAfterCB1() {
+    void testAfterCB1() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1));
         State state = automaton.getCurrentState();
         State expected = State.S2;
@@ -56,7 +56,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testAfterCB2() {
+    void testAfterCB2() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2));
         State state = automaton.getCurrentState();
         State expected = State.S3;
@@ -64,7 +64,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testAfterCB3() {
+    void testAfterCB3() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3));
         State state = automaton.getCurrentState();
         State expected = State.S4;
@@ -72,7 +72,7 @@ public class NominalTest {
     }
 
     @Test
-    public void testAfterCB4() {
+    void testAfterCB4() {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3,
                 Event.CB4));
         State state = automaton.getCurrentState();

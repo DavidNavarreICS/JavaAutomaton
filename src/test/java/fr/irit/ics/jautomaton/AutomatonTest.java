@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  */
-public class AutomatonTest {
+class AutomatonTest {
 
     /**
      * Error message used when the set of states is empty.
@@ -94,11 +94,11 @@ public class AutomatonTest {
     private static final Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
     private static final Object[] parametersS2 = new Object[]{false, "FOO1", "FOO2"};
 
-    public AutomatonTest() {
+    AutomatonTest() {
     }
 
     @Test
-    public void testConstructorNullEventSetShouldFail() {
+    void testConstructorNullEventSetShouldFail() {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Automaton<>(null, EnumSet.allOf(State.class)));
@@ -108,7 +108,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testConstructorEmptyEventSetShouldFail() {
+    void testConstructorEmptyEventSetShouldFail() {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Automaton<>(new HashSet<Event>(0), EnumSet.allOf(State.class)));
@@ -118,7 +118,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testConstructorNullStateSetShouldFail() {
+    void testConstructorNullStateSetShouldFail() {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Automaton<>(EnumSet.allOf(Event.class), null));
@@ -128,7 +128,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testConstructorEmptyStateSetShouldFail() {
+    void testConstructorEmptyStateSetShouldFail() {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Automaton<>(EnumSet.allOf(Event.class), new HashSet<State>(0)));
@@ -138,7 +138,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAcceptEventIsCorrect() {
+    void testAcceptEventIsCorrect() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         automaton.acceptEvent(Event.E1);
@@ -148,7 +148,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAcceptEventE2StateIncorrect() {
+    void testAcceptEventE2StateIncorrect() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         final IllegalStateException exception = Assertions.assertThrows(
@@ -158,7 +158,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAcceptEventEventNullNotAllowed() {
+    void testAcceptEventEventNullNotAllowed() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.initialize();
         final IllegalArgumentException exception = Assertions.assertThrows(
@@ -168,7 +168,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testCreateRegisterCorrectName() {
+    void testCreateRegisterCorrectName() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(CORRECT_REGISTER_NAME);
         final Integer value = 0;
@@ -178,7 +178,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testSetRegisterRegisterDoesNotExists() {
+    void testSetRegisterRegisterDoesNotExists() {
         final Automaton<Event, State> automaton = getAutomaton();
         final Integer value = 0;
         final IllegalArgumentException exception = Assertions.assertThrows(
@@ -189,7 +189,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testGetRegisterRegisterDoesNotExists() {
+    void testGetRegisterRegisterDoesNotExists() {
         final Automaton<Event, State> automaton = getAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -199,7 +199,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testCreateRegisterIncorrectName() {
+    void testCreateRegisterIncorrectName() {
         final Automaton<Event, State> automaton = getAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -209,7 +209,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testCreateRegisterNullName() {
+    void testCreateRegisterNullName() {
         final Automaton<Event, State> automaton = getAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -218,7 +218,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testCreateRegisterNameAlreadyUsed() {
+    void testCreateRegisterNameAlreadyUsed() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.createRegister(CORRECT_REGISTER_NAME);
         final IllegalArgumentException exception = Assertions.assertThrows(
@@ -228,7 +228,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleState() {
+    void testRegisterInitializationSimpleState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         automaton.registerInitialization(State.S1);
         automaton.initialize();
@@ -238,7 +238,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleStateWithAction() {
+    void testRegisterInitializationSimpleStateWithAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final ActionImpl actionImpl = new ActionImpl(0);
         automaton.registerInitialization(State.S1, actionImpl);
@@ -252,7 +252,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleStateWithNullAction() {
+    void testRegisterInitializationSimpleStateWithNullAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final ActionImpl actionImpl = null;
         automaton.registerInitialization(State.S1, actionImpl);
@@ -264,7 +264,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleStateWithEmptyAction() {
+    void testRegisterInitializationSimpleStateWithEmptyAction() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
@@ -279,7 +279,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationSimpleStateWithNullActionAndNullCondition() {
+    void testRegisterInitializationSimpleStateWithNullActionAndNullCondition() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
@@ -294,7 +294,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndConditionBranch1() {
+    void testRegisterInitializationMultipleStateWithActionAndConditionBranch1() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(Arrays.asList(parametersS1));
         State result = automaton.getCurrentState();
@@ -305,7 +305,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndConditionBranch2() {
+    void testRegisterInitializationMultipleStateWithActionAndConditionBranch2() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         automaton.initialize(Arrays.asList(parametersS2));
         State result = automaton.getCurrentState();
@@ -316,7 +316,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithFewActionsAndFewConditions() {
+    void testRegisterInitializationMultipleStateWithFewActionsAndFewConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -331,7 +331,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithOneStateNullActionsAndNullConditions() {
+    void testRegisterInitializationMultipleStateWithOneStateNullActionsAndNullConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -346,7 +346,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithOneStateEmptyActionsAndEmptyConditions() {
+    void testRegisterInitializationMultipleStateWithOneStateEmptyActionsAndEmptyConditions() {
         a1.reinit();
         a2.reinit();
         final Automaton<Event, State> automaton = getAutomatonWithoutInitialState();
@@ -361,7 +361,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndConditionNeverReachable() {
+    void testRegisterInitializationMultipleStateWithActionAndConditionNeverReachable() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -370,7 +370,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndConditionNullSetOfState() {
+    void testRegisterInitializationMultipleStateWithActionAndConditionNullSetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -379,7 +379,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationMultipleStateWithActionAndConditionEmptySetOfState() {
+    void testRegisterInitializationMultipleStateWithActionAndConditionEmptySetOfState() {
         final Automaton<Event, State> automaton = getFooAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -388,7 +388,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterInitializationIncorrectState() {
+    void testRegisterInitializationIncorrectState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -397,7 +397,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch1() {
+    void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch1() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -416,7 +416,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch2() {
+    void testRegisterTransitionTwoFinalStatesFromSameInitialStateBranch2() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -435,7 +435,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEventE1IsNotEnabledWhileNotInitialized() {
+    void testEnabledEventE1IsNotEnabledWhileNotInitialized() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -446,7 +446,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEventE1IsEnabled() {
+    void testEnabledEventE1IsEnabled() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -458,7 +458,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEventE2IsNotEnabled() {
+    void testEnabledEventE2IsNotEnabled() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -470,7 +470,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEventE2IsNotEnabledInS1() {
+    void testEnabledEventE2IsNotEnabledInS1() {
         final Automaton<Event, State> automaton = getAutomaton();
         a1.reinit();
         a2.reinit();
@@ -483,7 +483,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testEnabledEventE1IsEnabledInS1() {
+    void testEnabledEventE1IsEnabledInS1() {
         final Automaton<Event, State> automaton = getAutomaton();
         automaton.registerInitialization(State.S1);
         automaton.registerTransition(State.S1, Event.E1, State.S2);
@@ -494,7 +494,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListenerInitialState() {
+    void testPropertyChangeListenerInitialState() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final StatePropertyChangeListener statePropertyListener = new StatePropertyChangeListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, statePropertyListener);
@@ -504,7 +504,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListenerInitialEnablingE1() {
+    void testPropertyChangeListenerInitialEnablingE1() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final EventPropertyChangeListener eventPropertyListener = new EventPropertyChangeListener(Event.E1);
         automaton.addPropertyChangeListener(eventPropertyListener.getPropertyName(), eventPropertyListener);
@@ -514,7 +514,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testPropertyChangeListenerInitialEnablingE2() {
+    void testPropertyChangeListenerInitialEnablingE2() {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final EventPropertyChangeListener eventPropertyListener = new EventPropertyChangeListener(Event.E2);
         automaton.addPropertyChangeListener(eventPropertyListener.getPropertyName(), eventPropertyListener);
@@ -524,7 +524,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerAllowedE1() {
+    void testAddPropertyChangeListenerAllowedE1() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Event.E1.toString() + Automaton.ENABLED_SUFFIX, listener);
@@ -536,7 +536,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerAllowedE2() {
+    void testAddPropertyChangeListenerAllowedE2() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Event.E2.toString() + Automaton.ENABLED_SUFFIX, listener);
@@ -548,7 +548,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerAllowedState() {
+    void testAddPropertyChangeListenerAllowedState() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -559,7 +559,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRemovePropertyChangeListenerPropertyChangeListener() {
+    void testRemovePropertyChangeListenerPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(listener);
@@ -574,7 +574,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerStringPropertyChangeListener() {
+    void testAddPropertyChangeListenerStringPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -585,7 +585,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testRemovePropertyChangeListenerStringPropertyChangeListener() {
+    void testRemovePropertyChangeListenerStringPropertyChangeListener() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
@@ -600,7 +600,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerStringNotAllowed() {
+    void testAddPropertyChangeListenerStringNotAllowed() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
         final IllegalArgumentException exception = Assertions.assertThrows(
@@ -610,7 +610,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testAddPropertyChangeListenerListenerNull() {
+    void testAddPropertyChangeListenerListenerNull() {
         final Automaton<Event, State> automaton = getAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
@@ -619,7 +619,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         final Automaton<Event, State> automaton = getAutomaton();
         String result = automaton.toString();
         Boolean isNull = Objects.isNull(result);
@@ -629,7 +629,7 @@ public class AutomatonTest {
     }
 
     @Test
-    public void testToStringForComplexAutomaton() {
+    void testToStringForComplexAutomaton() {
         final Automaton<Event, State> automaton = getFullAutomaton();
         String result = automaton.toString();
         Boolean isNull = Objects.isNull(result);
@@ -754,7 +754,7 @@ public class AutomatonTest {
 
         private final Boolean condition;
 
-        public ConditionImpl(Boolean condition) {
+        ConditionImpl(Boolean condition) {
             this.condition = condition;
         }
 

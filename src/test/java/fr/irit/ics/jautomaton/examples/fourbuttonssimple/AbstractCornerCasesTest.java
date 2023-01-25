@@ -16,8 +16,6 @@
 package fr.irit.ics.jautomaton.examples.fourbuttonssimple;
 
 import fr.irit.ics.jautomaton.Automaton;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,31 +26,21 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 public abstract class AbstractCornerCasesTest {
 
-    public static Object[] getData(final List<TestConfiguration.Event> exclusions) {
-        List answer = new ArrayList(TestConfiguration.State.values().length);
-        for (TestConfiguration.Event event : TestConfiguration.Event.values()) {
-            if (!exclusions.contains(event)) {
-                answer.add(event);
-            }
-        }
-        return answer.toArray();
-    }
-
     protected Automaton<TestConfiguration.Event, TestConfiguration.State> automaton;
 
     public abstract void putInCorrectState();
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testAcceptEventEventNotAllowed(final TestConfiguration.Event event) {
-        setUp();
-        final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    void testAcceptEventEventNotAllowed(final TestConfiguration.Event event) {
+        initAutomaton();
+        final IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
             automaton.acceptEvent(event);
         });
         Assertions.assertNotNull(exception);
     }
 
-    protected final void setUp() {
+    protected final void initAutomaton() {
         automaton = TestConfiguration.getNewAutomaton();
         putInCorrectState();
     }
