@@ -22,6 +22,7 @@ import java.util.Objects;
  *
  * @param <E1> the type of the first object of the pair
  * @param <E2> the type of the second object of the pair
+ *
  * @author David Navarre
  */
 public final class Pair<E1, E2> {
@@ -29,11 +30,11 @@ public final class Pair<E1, E2> {
     /**
      * Used to compute the hashcode.
      */
-    private static final int HASHCODE_MODIFIER = 53;
+    private static final int HASHCODE_BASE = 5;
     /**
      * Used to compute the hashcode.
      */
-    private static final int HASHCODE_BASE = 5;
+    private static final int HASHCODE_MODIFIER = 53;
     /**
      * The first object.
      */
@@ -46,12 +47,25 @@ public final class Pair<E1, E2> {
     /**
      * Build a typed pair of two objects.
      *
-     * @param aFirstObject the first object
+     * @param aFirstObject  the first object
      * @param aSecondObject the second object
      */
     public Pair(final E1 aFirstObject, final E2 aSecondObject) {
         this.first = aFirstObject;
         this.second = aSecondObject;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pair<?, ?> other = (Pair<?, ?>) obj;
+        return (Objects.equals(this.first, other.first)
+                && Objects.equals(this.second, other.second));
     }
 
     /**
@@ -78,19 +92,6 @@ public final class Pair<E1, E2> {
         hash = HASHCODE_MODIFIER * hash + Objects.hashCode(this.first);
         hash = HASHCODE_MODIFIER * hash + Objects.hashCode(this.second);
         return hash;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pair<?, ?> other = (Pair<?, ?>) obj;
-        return (Objects.equals(this.first, other.first)
-                && Objects.equals(this.second, other.second));
     }
 
     @Override

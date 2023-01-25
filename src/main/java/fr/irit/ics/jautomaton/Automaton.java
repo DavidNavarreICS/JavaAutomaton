@@ -57,7 +57,8 @@ import java.util.regex.Pattern;
  * <br>{@link Automaton#registerInitialization(java.lang.Enum, fr.irit.ics.jautomaton.Action)},
  * <br>{@link Automaton#registerInitialization(java.util.List, java.util.List, java.util.List)}
  * </ul>
- * <img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton" style="text-align: justify; -moz-text-align-last: center; text-align-last: center;"><br>
+ * <img src="./doc-files/Automaton-1.png" alt="Example 1 of Automaton"
+ * style="text-align: justify; -moz-text-align-last: center; text-align-last: center;"><br>
  * <em>Fig.1 - Example of a simple automaton.</em><br>
  * An automaton may be used as an attribute of any class.<br>
  * <pre>
@@ -89,7 +90,8 @@ import java.util.regex.Pattern;
  *      }
  * </pre>
  * <h2>Notifications</h2>
- * <br>It is possible to add property change listeners to be notified of state changes and/or event enabling, using {@link Automaton#addPropertyChangeListener(java.lang.String,
+ * <br>It is possible to add property change listeners to be notified of state changes and/or event enabling,
+ * using {@link Automaton#addPropertyChangeListener(java.lang.String,
  * java.beans.PropertyChangeListener)}. For state changes the property name is {@link Automaton#STATE_PROPERTY} and for
  * event enabling, the property name is the result of the concatenation of the event name and a suffix
  * {@link Automaton#ENABLED_SUFFIX} (for instance: <code>Ev1_enabled</code>).
@@ -160,17 +162,15 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * The class logger.
      */
-    private static final Logger LOG = Logger.
-            getLogger(Automaton.class.getName());
+    private static final Logger LOG = Logger.getLogger(Automaton.class.getName());
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final String REGISTER_NAME_PATTERN_STRING = "[a-zA-Z]([a-zA-Z0-9_])*";
+    private static final String REGISTER_NAME_PATTERN_STRING = "[a-zA-Z]\\w*";
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final Pattern REGISTER_NAME_PATTERN
-            = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
+    private static final Pattern REGISTER_NAME_PATTERN = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
     /**
      * String used as a prefix for any register in any message.
      */
