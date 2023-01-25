@@ -15,20 +15,16 @@
  */
 package fr.irit.ics.jautomaton.examples.fourbuttonssimple;
 
-import java.util.Arrays;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
 /**
  *
  * @author David Navarre
  */
-@RunWith(Parameterized.class)
 public class S2CornerCasesTest extends AbstractCornerCasesTest {
 
-    @Parameterized.Parameters(name = "{index}: trigger event {0} in state S2")
-    public static Object[] data() {
-        return getData(Arrays.asList(TestConfiguration.Event.CB2));
+    public static Stream<TestConfiguration.Event> data() {
+        return Stream.of(TestConfiguration.Event.CB2);
     }
 
     @Override

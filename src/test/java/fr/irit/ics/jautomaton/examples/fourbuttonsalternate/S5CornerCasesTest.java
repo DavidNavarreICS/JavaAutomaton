@@ -16,20 +16,16 @@
 package fr.irit.ics.jautomaton.examples.fourbuttonsalternate;
 
 import fr.irit.ics.jautomaton.examples.fourbuttonsalternate.TestConfiguration.Event;
-import java.util.Arrays;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
 /**
  *
  * @author David Navarre
  */
-@RunWith(Parameterized.class)
 public class S5CornerCasesTest extends AbstractCornerCasesTest {
 
-    @Parameterized.Parameters(name = "{index}: trigger event {0} in state S5")
-    public static Object[] data() {
-        return getData(Arrays.asList(Event.CB3, Event.CB4));
+    public static Stream<TestConfiguration.Event> data() {
+        return Stream.of(TestConfiguration.Event.CB3, TestConfiguration.Event.CB4);
     }
 
     @Override

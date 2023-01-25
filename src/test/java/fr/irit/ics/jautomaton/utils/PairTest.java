@@ -16,9 +16,8 @@
 package fr.irit.ics.jautomaton.utils;
 
 import java.util.Objects;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -42,100 +41,90 @@ public class PairTest {
         return new Pair<>(e1, e2);
     }
 
-    
     @Test
     public void testGetFirstIsSame() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.getFirst();
         Integer expected = DEFAULT_FIRST_ELEMENT;
-        Assert.assertEquals("getFirst must return the value used to build the pair", expected, result);
+        Assertions.assertEquals(expected, result, "getFirst must return the value used to build the pair");
     }
 
-    
     @Test
     public void testGetSecondIsSame() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.getSecond();
         Integer expected = DEFAULT_SECOND_ELEMENT;
-        Assert.assertEquals("getSecond must return the value used to build the pair", expected, result);
+        Assertions.assertEquals(expected, result, "getSecond must return the value used to build the pair");
     }
 
-    
     @Test
     public void testHashCodeNotNull() {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.hashCode();
         Integer notExpected = 0;
-        Assert.assertFalse("Hashcode cannot be null", notExpected.equals(result));
+        Assertions.assertFalse(notExpected.equals(result), "Hashcode cannot be null");
     }
 
-    
     @Test
     public void testEqualsOtherPairIsSame() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair();
         Boolean result1 = aPair1.equals(aPair2);
         Boolean result2 = aPair1.equals(aPair2);
-        Assert.assertTrue("Two pairs with the same two elements must be equals", result1);
-        Assert.assertTrue("Two pairs with the same two elements must be equals", result2);
+        Assertions.assertTrue(result1, "Two pairs with the same two elements must be equals");
+        Assertions.assertTrue(result2, "Two pairs with the same two elements must be equals");
     }
 
-    
     @Test
     public void testEqualsOtherPairFirstElementIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair(DEFAULT_DIFFERENT_FIRST_ELEMENT, DEFAULT_SECOND_ELEMENT);
         Boolean result1 = aPair1.equals(aPair2);
         Boolean result2 = aPair1.equals(aPair2);
-        Assert.assertFalse("Two pairs with two different elements must not be equals", result1);
-        Assert.assertFalse("Two pairs with two different elements must not be equals", result2);
+        Assertions.assertFalse(result1, "Two pairs with two different elements must not be equals");
+        Assertions.assertFalse(result2, "Two pairs with two different elements must not be equals");
     }
 
-    
     @Test
     public void testEqualsOtherPairSecondElementIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Pair<Integer, Integer> aPair2 = getNewPair(DEFAULT_FIRST_ELEMENT, DEFAULT_DIFFERENT_SECOND_ELEMENT);
         Boolean result1 = aPair1.equals(aPair2);
         Boolean result2 = aPair1.equals(aPair2);
-        Assert.assertFalse("Two pairs with two different elements must not be equals", result1);
-        Assert.assertFalse("Two pairs with two different elements must not be equals", result2);
+        Assertions.assertFalse(result1, "Two pairs with two different elements must not be equals");
+        Assertions.assertFalse(result2, "Two pairs with two different elements must not be equals");
     }
 
-    
     @Test
     public void testEqualsOtherClassIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Object aPair2 = new Object();
         Boolean result1 = aPair1.equals(aPair2);
-        Assert.assertFalse("A pair cannot be equals to an object from another class", result1);
+        Assertions.assertFalse(result1, "A pair cannot be equals to an object from another class");
     }
 
-    
     @Test
     public void testEqualsNullObjectIsDifferent() {
         Pair<Integer, Integer> aPair1 = getNewPair();
         Object aPair2 = null;
         Boolean result1 = aPair1.equals(aPair2);
-        Assert.assertFalse("A pair cannot be equals to a null object", result1);
+        Assertions.assertFalse(result1, "A pair cannot be equals to a null object");
     }
 
-    
     @Test
     public void testToStringNotNull() {
         Pair<Integer, Integer> aPair = getNewPair();
         String result = aPair.toString();
         Boolean analyzed = Objects.nonNull(result);
-        Assert.assertTrue("ToString cannot be null", analyzed);
+        Assertions.assertTrue(analyzed, "ToString cannot be null");
     }
 
-    
     @Test
     public void testToStringNotEmpty() {
         Pair<Integer, Integer> aPair = getNewPair();
         String result = aPair.toString();
         Boolean analyzed = !result.isEmpty();
-        Assert.assertTrue("ToString cannot be empty", analyzed);
+        Assertions.assertTrue(analyzed, "ToString cannot be empty");
     }
 
 }

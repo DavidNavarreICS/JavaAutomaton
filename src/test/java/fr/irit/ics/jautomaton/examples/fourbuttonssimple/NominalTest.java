@@ -21,8 +21,8 @@ import fr.irit.ics.jautomaton.examples.fourbuttonssimple.TestConfiguration.State
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -44,11 +44,7 @@ public class NominalTest {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Collections.EMPTY_LIST);
         State state = automaton.getCurrentState();
         State expected = State.S1;
-        Assert.assertEquals("Current state should be " + expected, expected, state);
-        Assert.assertTrue("CB1 should be enabled", automaton.isEventEnabled(Event.CB1));
-        Assert.assertFalse("CB2 should not be enabled", automaton.isEventEnabled(Event.CB2));
-        Assert.assertFalse("CB3 should not be enabled", automaton.isEventEnabled(Event.CB3));
-        Assert.assertFalse("CB4 should not be enabled", automaton.isEventEnabled(Event.CB4));
+        verifyAssertions(automaton, expected, state, true, false, false, false);
     }
 
     @Test
@@ -56,11 +52,7 @@ public class NominalTest {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1));
         State state = automaton.getCurrentState();
         State expected = State.S2;
-        Assert.assertEquals("Current state should be " + expected, expected, state);
-        Assert.assertFalse("CB1 should not be enabled", automaton.isEventEnabled(Event.CB1));
-        Assert.assertTrue("CB2 should be enabled", automaton.isEventEnabled(Event.CB2));
-        Assert.assertFalse("CB3 should not be enabled", automaton.isEventEnabled(Event.CB3));
-        Assert.assertFalse("CB4 should not be enabled", automaton.isEventEnabled(Event.CB4));
+        verifyAssertions(automaton, expected, state, false, true, false, false);
     }
 
     @Test
@@ -68,11 +60,7 @@ public class NominalTest {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2));
         State state = automaton.getCurrentState();
         State expected = State.S3;
-        Assert.assertEquals("Current state should be " + expected, expected, state);
-        Assert.assertFalse("CB1 should not be enabled", automaton.isEventEnabled(Event.CB1));
-        Assert.assertFalse("CB2 should not be enabled", automaton.isEventEnabled(Event.CB2));
-        Assert.assertTrue("CB3 should be enabled", automaton.isEventEnabled(Event.CB3));
-        Assert.assertFalse("CB4 should not be enabled", automaton.isEventEnabled(Event.CB4));
+        verifyAssertions(automaton, expected, state, false, false, true, false);
     }
 
     @Test
@@ -80,22 +68,38 @@ public class NominalTest {
         Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3));
         State state = automaton.getCurrentState();
         State expected = State.S4;
-        Assert.assertEquals("Current state should be " + expected, expected, state);
-        Assert.assertFalse("CB1 should not be enabled", automaton.isEventEnabled(Event.CB1));
-        Assert.assertFalse("CB2 should not be enabled", automaton.isEventEnabled(Event.CB2));
-        Assert.assertFalse("CB3 should not be enabled", automaton.isEventEnabled(Event.CB3));
-        Assert.assertTrue("CB4 should be enabled", automaton.isEventEnabled(Event.CB4));
+        verifyAssertions(automaton, expected, state, false, false, false, true);
     }
 
     @Test
     public void testAfterCB4() {
-        Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3, Event.CB4));
+        Automaton<Event, State> automaton = getAutomatonAfterSequence(Arrays.asList(Event.CB1, Event.CB2, Event.CB3,
+                Event.CB4));
         State state = automaton.getCurrentState();
         State expected = State.S1;
-        Assert.assertEquals("Current state should be " + expected, expected, state);
-        Assert.assertTrue("CB1 should be enabled", automaton.isEventEnabled(Event.CB1));
-        Assert.assertFalse("CB2 should not be enabled", automaton.isEventEnabled(Event.CB2));
-        Assert.assertFalse("CB3 should not be enabled", automaton.isEventEnabled(Event.CB3));
-        Assert.assertFalse("CB4 should not be enabled", automaton.isEventEnabled(Event.CB4));
+        verifyAssertions(automaton, expected, state, true, false, false, false);
+    }
+
+    private void verifyAssertions(
+            final Automaton<Event, State> aAutomaton,
+            final State aExpected,
+            final State aState,
+            final boolean CB1Enable,
+            final boolean CB2Enable,
+            final boolean CB3Enable,
+            final boolean CB4Enable) {
+        Assertions.assertEquals(aExpected, aState, "Current state should be " + aExpected);
+        assertEnabling(aAutomaton, Event.CB1, CB1Enable);
+        assertEnabling(aAutomaton, Event.CB2, CB2Enable);
+        assertEnabling(aAutomaton, Event.CB3, CB3Enable);
+        assertEnabling(aAutomaton, Event.CB4, CB4Enable);
+    }
+
+    private void assertEnabling(final Automaton<Event, State> aAutomaton, final Event aEvent, boolean aEventEnable) {
+        if (aEventEnable) {
+            Assertions.assertTrue(aAutomaton.isEventEnabled(aEvent), aEvent.toString() + " should be enabled");
+        } else {
+            Assertions.assertFalse(aAutomaton.isEventEnabled(aEvent), aEvent.toString() + " should not be enabled");
+        }
     }
 }

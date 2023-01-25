@@ -18,21 +18,15 @@ package fr.irit.ics.jautomaton.examples.fourbuttonssimple;
 import fr.irit.ics.jautomaton.Automaton;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  *
  * @author David Navarre
  */
 public abstract class AbstractCornerCasesTest {
-
-    protected Automaton<TestConfiguration.Event, TestConfiguration.State> automaton;
-
-    protected final void setUp() {
-        automaton = TestConfiguration.getNewAutomaton();
-        putInCorrectState();
-    }
 
     public static Object[] getData(final List<TestConfiguration.Event> exclusions) {
         List answer = new ArrayList(TestConfiguration.State.values().length);
@@ -44,14 +38,22 @@ public abstract class AbstractCornerCasesTest {
         return answer.toArray();
     }
 
-    @Parameterized.Parameter(0)
-    public TestConfiguration.Event event;
+    protected Automaton<TestConfiguration.Event, TestConfiguration.State> automaton;
 
     public abstract void putInCorrectState();
 
-    @Test(expected = IllegalStateException.class)
-    public void testAcceptEventEventNotAllowed() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAcceptEventEventNotAllowed(final TestConfiguration.Event event) {
         setUp();
-        automaton.acceptEvent(event);
+        final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            automaton.acceptEvent(event);
+        });
+        Assertions.assertNotNull(exception);
+    }
+
+    protected final void setUp() {
+        automaton = TestConfiguration.getNewAutomaton();
+        putInCorrectState();
     }
 }
