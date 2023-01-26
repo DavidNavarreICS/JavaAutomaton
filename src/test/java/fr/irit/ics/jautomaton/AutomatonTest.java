@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -93,8 +94,16 @@ class AutomatonTest {
     private static final ActionImpl a2 = new ActionImpl(2);
     private static final Object[] parametersS1 = new Object[]{true, "FOO1", "FOO2"};
     private static final Object[] parametersS2 = new Object[]{false, "FOO1", "FOO2"};
+    private final Set<State> allStates;
+    private final Set<State> noState;
+    private final Set<Event> allEvents;
+    private final Set<Event> noEvent;
 
     AutomatonTest() {
+        this.noEvent = new HashSet<>(0);
+        this.allEvents = EnumSet.allOf(Event.class);
+        this.noState = new HashSet<>(0);
+        this.allStates = EnumSet.allOf(State.class);
     }
 
     @Test
@@ -102,7 +111,6 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    var allStates = EnumSet.allOf(State.class);
                     var none = new Automaton<>(null, allStates);
                 }, "Null event not allowed.");
         final String exceptionMessage = exception.getMessage();
@@ -115,8 +123,6 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    final HashSet<Event> noEvent = new HashSet<Event>(0);
-                    final EnumSet<State> allStates = EnumSet.allOf(State.class);
                     var none = new Automaton<>(noEvent, allStates);
                 }, "Empty event set not allowed.");
         final String exceptionMessage = exception.getMessage();
@@ -129,7 +135,6 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    final EnumSet<Event> allEvents = EnumSet.allOf(Event.class);
                     var none = new Automaton<>(allEvents, null);
                 }, "Null state not allowed.");
         final String exceptionMessage = exception.getMessage();
@@ -142,8 +147,6 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    final EnumSet<Event> allEvents = EnumSet.allOf(Event.class);
-                    final HashSet<State> noState = new HashSet<State>(0);
                     var none = new Automaton<>(allEvents, noState);
                 }, "Empty state set not allowed.");
         final String exceptionMessage = exception.getMessage();
@@ -379,11 +382,11 @@ class AutomatonTest {
 
     @Test
     void testRegisterInitializationMultipleStateWithActionAndConditionNeverReachable() {
+        final List<Object> parameters = Arrays.asList(parametersS1);
         final Automaton<Event, State> automaton = getFooAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    final List<Object> parameters = Arrays.asList(parametersS1);
                     automaton.initialize(parameters);
                 }, "Conditions must be reachable.");
         Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
@@ -400,12 +403,12 @@ class AutomatonTest {
 
     @Test
     void testRegisterInitializationMultipleStateWithActionAndConditionEmptySetOfState() {
+        final ArrayList<State> noStateList = new ArrayList<State>(0);
         final Automaton<Event, State> automaton = getFooAutomaton();
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    final ArrayList<State> noState = new ArrayList<State>(0);
-                    automaton.registerInitialization(noState, null, null);
+                    automaton.registerInitialization(noStateList, null, null);
                 },
                 "At least one initial state.");
         Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
