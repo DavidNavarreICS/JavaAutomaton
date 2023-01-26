@@ -32,12 +32,12 @@ public abstract class AbstractCornerCasesTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    void testAcceptEventEventNotAllowed(final TestConfiguration.Event event) {
+    void testAcceptEventEventNotAllowed(final TestConfiguration.Event aEvent) {
         initAutomaton();
         final IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
-            automaton.acceptEvent(event);
-        });
-        Assertions.assertNotNull(exception);
+            automaton.acceptEvent(aEvent);
+        }, "Event " + aEvent + " not allowed in this context");
+        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
     }
 
     protected final void initAutomaton() {
