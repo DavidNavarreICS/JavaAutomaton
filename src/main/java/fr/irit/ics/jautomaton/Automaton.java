@@ -666,7 +666,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     @Override
     public String toString() {
         String toString = "Initial State: " + initialStateData.values() + "\n";
-        for (S state : states) {
+        for (var state : states) {
             toString = dataStructure.
                     entrySet().stream()
                     .filter((Map.Entry<Pair<E, S>, Map<Condition, Pair<S, Action>>> entry)
@@ -688,7 +688,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
      */
     private void checkPropertyName(String propertyName) {
         boolean isCorrect = STATE_PROPERTY.equals(propertyName);
-        for (E event : events) {
+        for (var event : events) {
             final String expected = event.toString() + ENABLED_SUFFIX;
             if (expected.equals(propertyName)) {
                 isCorrect = true;
@@ -833,7 +833,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
             final Map<Condition, Pair<S, Action>> futurState,
             final List<Object> parameters) {
         var foundState = false;
-        for (Map.Entry<Condition, Pair<S, Action>> entry : futurState.
+        for (var entry : futurState.
                 entrySet()) {
             LOG.log(Level.FINEST, "Trying condition: {0}", entry.getKey());
             if (entry.getKey().isVerified(parameters)) {
