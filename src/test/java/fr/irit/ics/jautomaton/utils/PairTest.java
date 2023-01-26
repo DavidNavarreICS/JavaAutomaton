@@ -62,7 +62,7 @@ class PairTest {
         Pair<Integer, Integer> aPair = getNewPair();
         Integer result = aPair.hashCode();
         Integer notExpected = 0;
-        Assertions.assertFalse(notExpected.equals(result), "Hashcode cannot be null");
+        Assertions.assertNotEquals(notExpected, result, "Hashcode cannot be null");
     }
 
     @Test
