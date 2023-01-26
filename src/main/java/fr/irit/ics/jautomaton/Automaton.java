@@ -665,7 +665,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
 
     @Override
     public String toString() {
-        String toString = "Initial State: " + initialStateData.values() + "\n";
+        var toString = "Initial State: " + initialStateData.values() + "\n";
         for (var state : states) {
             toString = dataStructure.
                     entrySet().stream()
