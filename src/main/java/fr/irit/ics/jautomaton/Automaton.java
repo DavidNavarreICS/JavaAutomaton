@@ -165,7 +165,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final String REGISTER_NAME_PATTERN_STRING = "[a-zA-Z]\\w*";
+    private static final String REGISTER_NAME_PATTERN_STRING = "\\p{IsLatin}\\w*";
     /**
      * REGEX that must be followed by regiters names.
      */
