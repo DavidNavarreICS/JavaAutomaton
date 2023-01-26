@@ -169,7 +169,8 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * REGEX that must be followed by regiters names.
      */
-    private static final Pattern REGISTER_NAME_PATTERN = Pattern.compile(REGISTER_NAME_PATTERN_STRING);
+    private static final Pattern REGISTER_NAME_PATTERN = Pattern.compile(REGISTER_NAME_PATTERN_STRING,
+            Pattern.UNICODE_CHARACTER_CLASS);
     /**
      * String used as a prefix for any register in any message.
      */
