@@ -179,52 +179,6 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * String used as a prefix for any state in any message.
      */
     private static final String STATE_PREFIX = "State ";
-
-    /**
-     * Verifies that the provided listener is not null.
-     *
-     * @param listener the concerned listener
-     */
-    private static void checkListener(PropertyChangeListener listener) {
-        if (Objects.isNull(listener)) {
-            throw new IllegalArgumentException("The added listener cannot be null");
-        }
-    }
-
-    /**
-     * Provides an error message used when attempting to create an already existing register.
-     *
-     * @param name the name of the register
-     *
-     * @return an error message
-     */
-    private static String getErrorMessageRegisterAlreadyExists(final String name) {
-        return REGISTER_PREFIX + name + " already exists.";
-    }
-
-    /**
-     * Provides an error message used when attempting to use an non-existing register.
-     *
-     * @param name the name of the register
-     *
-     * @return an error message
-     */
-    private static String getErrorMessageRegisterDoesNotExist(final String name) {
-        return REGISTER_PREFIX + name + " does not exist.";
-    }
-
-    /**
-     * Produces an error message used when the refister name is incorrect.
-     *
-     * @param name the name of the register
-     *
-     * @return an error message
-     */
-    private static String getErrorMessageRegisterNameIncorrect(final String name) {
-        return "< " + name + " > is not a correct name for a register."
-                + "\nName must fit "
-                + REGISTER_NAME_PATTERN_STRING;
-    }
     /**
      * Stores the current state value.
      */
@@ -679,6 +633,52 @@ public final class Automaton<E extends Enum, S extends Enum> {
                     .reduce(toString, String::concat);
         }
         return toString;
+    }
+
+        /**
+     * Verifies that the provided listener is not null.
+     *
+     * @param listener the concerned listener
+     */
+    private static void checkListener(PropertyChangeListener listener) {
+        if (Objects.isNull(listener)) {
+            throw new IllegalArgumentException("The added listener cannot be null");
+        }
+    }
+
+    /**
+     * Provides an error message used when attempting to create an already existing register.
+     *
+     * @param name the name of the register
+     *
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterAlreadyExists(final String name) {
+        return REGISTER_PREFIX + name + " already exists.";
+    }
+
+    /**
+     * Provides an error message used when attempting to use an non-existing register.
+     *
+     * @param name the name of the register
+     *
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterDoesNotExist(final String name) {
+        return REGISTER_PREFIX + name + " does not exist.";
+    }
+
+    /**
+     * Produces an error message used when the refister name is incorrect.
+     *
+     * @param name the name of the register
+     *
+     * @return an error message
+     */
+    private static String getErrorMessageRegisterNameIncorrect(final String name) {
+        return "< " + name + " > is not a correct name for a register."
+                + "\nName must fit "
+                + REGISTER_NAME_PATTERN_STRING;
     }
 
     /**
