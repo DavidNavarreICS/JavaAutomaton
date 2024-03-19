@@ -89,10 +89,11 @@ import java.util.regex.Pattern;
  *      }
  * </pre>
  * <h2>Notifications</h2>
- * <br>It is possible to add property change listeners to be notified of state changes and/or event enabling, using {@link Automaton#addPropertyChangeListener(java.lang.String,
- * java.beans.PropertyChangeListener)}. For state changes the property name is {@link Automaton#STATE_PROPERTY} and for
- * event enabling, the property name is the result of the concatenation of the event name and a suffix
- * {@link Automaton#ENABLED_SUFFIX} (for instance: <code>Ev1_enabled</code>).
+ * <br>It is possible to add property change listeners to be notified of state changes and/or event enabling, using
+ * {@link Automaton#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)}. For state changes
+ * the property name is {@link Automaton#STATE_PROPERTY} and for event enabling, the property name is the result of the
+ * concatenation of the event name and a suffix {@link Automaton#ENABLED_SUFFIX} (for instance:
+ * <code>Ev1_enabled</code>).
  * <h2>Actions</h2>
  * It is possible to add actions in two different situations:
  * <ul>
@@ -318,15 +319,16 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 "Creating register {0}",
                 new Object[]{name});
         if (registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, getErrorMessageRegisterAlreadyExists(name));
+            final String errorMessageRegisterAlreadyExists = getErrorMessageRegisterAlreadyExists(name);
+            LOG.log(Level.SEVERE, errorMessageRegisterAlreadyExists);
             throw new IllegalArgumentException(
-                    getErrorMessageRegisterAlreadyExists(name));
+                    errorMessageRegisterAlreadyExists);
         } else if (Objects.isNull(name)
                 || !REGISTER_NAME_PATTERN.matcher(name).matches()) {
-            LOG.log(Level.SEVERE,
-                    getErrorMessageRegisterNameIncorrect(name));
+            final String errorMessageRegisterNameIncorrect = getErrorMessageRegisterNameIncorrect(name);
+            LOG.log(Level.SEVERE, errorMessageRegisterNameIncorrect);
             throw new IllegalArgumentException(
-                    getErrorMessageRegisterNameIncorrect(name));
+                    errorMessageRegisterNameIncorrect);
         } else {
             registers.put(name, null);
         }
@@ -380,9 +382,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 "Get register value of register {0} of Class {1}",
                 new Object[]{name, type});
         if (!registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
+            final String errorMessageRegisterDoesNotExist = getErrorMessageRegisterDoesNotExist(name);
+            LOG.log(Level.SEVERE, errorMessageRegisterDoesNotExist);
             throw new IllegalArgumentException(
-                    getErrorMessageRegisterDoesNotExist(name));
+                    errorMessageRegisterDoesNotExist);
         }
         return type.cast(registers.get(name));
     }
@@ -610,9 +613,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
                 "Setting value of the register {0} = {1}",
                 new Object[]{name, value});
         if (!registers.containsKey(name)) {
-            LOG.log(Level.SEVERE, getErrorMessageRegisterDoesNotExist(name));
+            final String errorMessageRegisterDoesNotExist = getErrorMessageRegisterDoesNotExist(name);
+            LOG.log(Level.SEVERE, errorMessageRegisterDoesNotExist);
             throw new IllegalArgumentException(
-                    getErrorMessageRegisterDoesNotExist(name));
+                    errorMessageRegisterDoesNotExist);
         }
         registers.put(name, value);
     }
@@ -847,11 +851,10 @@ public final class Automaton<E extends Enum, S extends Enum> {
             }
         }
         if (!foundState) {
-            LOG.log(
-                    Level.SEVERE,
-                    getErrorMessageNoPossibleStateChange(event, parameters));
+            final String errorMessageNoPossibleStateChange = getErrorMessageNoPossibleStateChange(event, parameters);
+            LOG.log(Level.SEVERE, errorMessageNoPossibleStateChange);
             throw new IllegalArgumentException(
-                    getErrorMessageNoPossibleStateChange(event, parameters));
+                    errorMessageNoPossibleStateChange);
         }
     }
 
