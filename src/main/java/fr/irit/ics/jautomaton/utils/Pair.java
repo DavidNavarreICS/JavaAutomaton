@@ -18,15 +18,20 @@ package fr.irit.ics.jautomaton.utils;
 import java.util.Objects;
 
 /**
- * Supports the creation of typed pair of objects.
+ * Supports the creation of typed pair of objects. As objects from this class may be used as Map keys, it implements
+ * Comparable.
  *
  * @param <E1> the type of the first object of the pair
  * @param <E2> the type of the second object of the pair
  *
  * @author David Navarre
  */
-public final class Pair<E1, E2> {
+public final class Pair<E1, E2> implements Comparable<Pair<E1, E2>> {
 
+    /**
+     * Default comparison value when comparing to a null value.
+     */
+    public static final int DEFAULT_COMPARISON_RESULT = 1;
     /**
      * Used to compute the hashcode.
      */
@@ -47,12 +52,21 @@ public final class Pair<E1, E2> {
     /**
      * Build a typed pair of two objects.
      *
-     * @param aFirstObject  the first object
+     * @param aFirstObject the first object
      * @param aSecondObject the second object
      */
     public Pair(final E1 aFirstObject, final E2 aSecondObject) {
         this.first = aFirstObject;
         this.second = aSecondObject;
+    }
+
+    @Override
+    public int compareTo(final Pair<E1, E2> aPair) {
+        if (Objects.isNull(aPair)) {
+            return DEFAULT_COMPARISON_RESULT;
+        } else {
+            return this.hashCode() - aPair.hashCode();
+        }
     }
 
     @Override

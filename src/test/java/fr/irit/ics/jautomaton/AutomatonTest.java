@@ -15,6 +15,7 @@
  */
 package fr.irit.ics.jautomaton;
 
+import fr.irit.ics.jautomaton.impl.AbstractCondition;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -778,7 +779,7 @@ class AutomatonTest {
         }
     }
 
-    private static class ConditionImpl implements Condition {
+    private static class ConditionImpl extends AbstractCondition {
 
         private final Boolean condition;
 
@@ -798,7 +799,7 @@ class AutomatonTest {
         }
     }
 
-    private static class ConditionNeverVerified implements Condition {
+    private static class ConditionNeverVerified extends AbstractCondition {
 
         @Override
         public boolean isVerified(List<Object> parameters) {

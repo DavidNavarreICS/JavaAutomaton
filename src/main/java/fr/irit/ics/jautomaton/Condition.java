@@ -20,10 +20,11 @@ import java.util.List;
 /**
  * This interface must be implemented by any condition within an automaton. It allows any number of contition
  * parameters.
+ * <br>WARNING: a condition must be comparable.
  *
  * @author David Navarre &lt;David.Navarre@irit.fr&gt;
  */
-public interface Condition {
+public interface Condition extends Comparable<Condition> {
 
     /**
      * Verify the condition.
