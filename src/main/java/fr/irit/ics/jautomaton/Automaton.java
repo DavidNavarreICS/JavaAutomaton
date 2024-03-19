@@ -876,6 +876,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
         }
 
         /**
+         * Private constructor for the singleton pattern.
+         */
+        private NullAction() {
+        }
+
+        /**
          * Provides a unique instance of a null action.
          *
          * @return the null action object
@@ -905,6 +911,12 @@ public final class Automaton<E extends Enum, S extends Enum> {
          */
         static {
             SINGLETON = new TrueCondition();
+        }
+
+        /**
+         * Private constructor for the singleton pattern.
+         */
+        private TrueCondition() {
         }
 
         /**
