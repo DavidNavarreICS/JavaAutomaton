@@ -127,4 +127,27 @@ class PairTest {
         Assertions.assertTrue(analyzed, "ToString cannot be empty");
     }
 
+    @Test
+    void testCompareTwoNonNullShouldSuccess() {
+        final Pair<Integer, Integer> pair1 = getNewPair();
+        final Pair<Integer, Integer> pair2
+                = getNewPair(DEFAULT_DIFFERENT_FIRST_ELEMENT, DEFAULT_DIFFERENT_SECOND_ELEMENT);
+        int expectedComparison1 = pair1.hashCode() - pair2.hashCode();
+
+        int comparison1 = pair1.compareTo(pair2);
+
+        Assertions.assertEquals(expectedComparison1, comparison1, "The comparison should be based on hashcode value.");
+    }
+
+    @Test
+    void testCompareWithNullShouldSuccess() {
+        final Pair<Integer, Integer> pair1 = getNewPair();
+        final Pair<Integer, Integer> pair2 = (Pair) null;
+        int expectedComparison1 = Pair.DEFAULT_COMPARISON_RESULT;
+
+        int comparison1 = pair1.compareTo(pair2);
+
+        Assertions.assertEquals(expectedComparison1, comparison1,
+                "The comparison should be 1 when a null condition is used for the comparison");
+    }
 }
