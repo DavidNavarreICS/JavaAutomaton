@@ -15,6 +15,7 @@
  */
 package fr.irit.ics.jautomaton;
 
+import fr.irit.ics.jautomaton.impl.AbstractCondition;
 import fr.irit.ics.jautomaton.utils.Pair;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -899,7 +900,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * A condition that is always true.
      */
-    private static final class TrueCondition implements Condition {
+    private static final class TrueCondition extends AbstractCondition {
 
         /**
          * The true condition unique instance.
