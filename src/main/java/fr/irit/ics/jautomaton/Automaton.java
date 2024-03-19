@@ -861,7 +861,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * An action object that does nothing.
      */
-    private static class NullAction implements Action {
+    private static final class NullAction implements Action {
 
         /**
          * The null action singleton instance.
@@ -899,7 +899,7 @@ public final class Automaton<E extends Enum, S extends Enum> {
     /**
      * A condition that is always true.
      */
-    private static class TrueCondition implements Condition {
+    private static final class TrueCondition implements Condition {
 
         /**
          * The true condition unique instance.
