@@ -15,7 +15,7 @@
  */
 /**
  * This package contains classes that allows
- * the creation of automaton using Java,
+ * the creation of an automaton using Java,
  * by registering states, transitions, actions and conditions.
  */
 package fr.irit.ics.jautomaton;
