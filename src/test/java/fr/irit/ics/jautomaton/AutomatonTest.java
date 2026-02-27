@@ -49,16 +49,6 @@ class AutomatonTest {
     /**
      * String that provides an error message.
      */
-    private static final String ERROR_SET_OF_INITIAL_STATES_CANNOT_BE_EMPTY
-            = "The set of initial states cannot be empty";
-    /**
-     * String that provides an error message.
-     */
-    private static final String ERROR_INITIAL_STATE_CANNOT_BE_NULL
-            = "The initial state cannot be null";
-    /**
-     * String that provides an error message.
-     */
     private static final String NULL_SET_OF_EVENTS_SHOULD_TRIGGER_AN_EXCEPTION
             = "A null set of events should trigger an IllegalArgumentException";
     /**
@@ -112,7 +102,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    var none = new Automaton<>(null, allStates);
+                    new Automaton<>(null, allStates);
                 }, "Null event not allowed.");
         final String exceptionMessage = exception.getMessage();
         Assertions.assertEquals(ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY, exceptionMessage,
@@ -124,7 +114,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    var none = new Automaton<>(noEvent, allStates);
+                    new Automaton<>(noEvent, allStates);
                 }, "Empty event set not allowed.");
         final String exceptionMessage = exception.getMessage();
         Assertions.assertEquals(ERROR_SET_OF_EVENTS_CANNOT_BE_EMPTY, exceptionMessage,
@@ -136,7 +126,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    var none = new Automaton<>(allEvents, null);
+                    new Automaton<>(allEvents, null);
                 }, "Null state not allowed.");
         final String exceptionMessage = exception.getMessage();
         Assertions.assertEquals(ERROR_SET_OF_STATES_CANNOT_BE_EMPTY, exceptionMessage,
@@ -148,7 +138,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    var none = new Automaton<>(allEvents, noState);
+                    new Automaton<>(allEvents, noState);
                 }, "Empty state set not allowed.");
         final String exceptionMessage = exception.getMessage();
         Assertions.assertEquals(ERROR_SET_OF_STATES_CANNOT_BE_EMPTY, exceptionMessage,
@@ -172,7 +162,7 @@ class AutomatonTest {
         final IllegalStateException exception = Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> automaton.acceptEvent(Event.E2), "Cannot accept E2 in this state.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, String.format("%s", exception.getMessage()));
     }
 
     @Test
@@ -182,7 +172,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.acceptEvent(null), "Null event not allowed.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -203,7 +193,7 @@ class AutomatonTest {
                 IllegalArgumentException.class,
                 () -> automaton.setRegisterValue(CORRECT_REGISTER_NAME, value),
                 "Non declared register cannot be update.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
 
     }
 
@@ -214,7 +204,7 @@ class AutomatonTest {
                 IllegalArgumentException.class,
                 () -> automaton.getRegisterValue(CORRECT_REGISTER_NAME, Integer.class),
                 "Non declared register cannot be retrieved.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
 
     }
 
@@ -225,7 +215,7 @@ class AutomatonTest {
                 IllegalArgumentException.class,
                 () -> automaton.createRegister(INCORRECT_REGISTER_NAME),
                 "Name must fit the correct pattern for registers.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
 
     }
 
@@ -235,7 +225,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.createRegister(null), "Null name not allowed.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -245,7 +235,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.createRegister(CORRECT_REGISTER_NAME), "Nom cannot be used twice.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -289,8 +279,8 @@ class AutomatonTest {
         final Automaton<Event, State> automaton = getAutomatonWithInitialState();
         final List<State> states = new ArrayList<>(1);
         states.add(State.S1);
-        final List<Action> actions = Collections.EMPTY_LIST;
-        final List<Condition> conditions = Collections.EMPTY_LIST;
+        final List<Action> actions = Collections.emptyList();
+        final List<Condition> conditions = Collections.emptyList();
         automaton.registerInitialization(states, actions, conditions);
         Object[] parameters = new Object[]{0.0F, "FOO"};
         automaton.initialize(Arrays.asList(parameters));
@@ -390,7 +380,7 @@ class AutomatonTest {
                 () -> {
                     automaton.initialize(parameters);
                 }, "Conditions must be reachable.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -399,7 +389,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.registerInitialization(null, null, null), "Multiple initial state requiers conditions.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -412,7 +402,7 @@ class AutomatonTest {
                     automaton.registerInitialization(noStateList, null, null);
                 },
                 "At least one initial state.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -421,7 +411,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.registerInitialization(null), "Initialization must be correct.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -635,7 +625,7 @@ class AutomatonTest {
                 IllegalArgumentException.class,
                 () -> automaton.addPropertyChangeListener(INCORRECT_PROPERTY_NAME, listener),
                 "Cannot register for unknown property.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -644,7 +634,7 @@ class AutomatonTest {
         final IllegalArgumentException exception = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, null), "Null listener not allowed.");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, exception.getMessage());
     }
 
     @Test
@@ -668,10 +658,9 @@ class AutomatonTest {
     }
 
     private static Automaton<Event, State> getAutomaton() {
-        final Automaton<Event, State> automaton = new Automaton<>(
+        return new Automaton<>(
                 EnumSet.allOf(Event.class),
                 EnumSet.allOf(State.class));
-        return automaton;
     }
 
     private Automaton<Event, State> getAutomatonWithInitialState() {
@@ -724,7 +713,7 @@ class AutomatonTest {
         public void propertyChange(PropertyChangeEvent evt) {
             newValue = evt.getNewValue();
         }
-    };
+    }
 
     private class EventPropertyChangeListener implements PropertyChangeListener {
 
@@ -747,12 +736,14 @@ class AutomatonTest {
         public void propertyChange(PropertyChangeEvent evt) {
             newValue = evt.getNewValue();
         }
-    };
+    }
 
     private static class FooListener implements PropertyChangeListener {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
+            // intentionally left blank – this listener is only used in tests
+            // to verify add/remove behaviour, so no action is required here.
         }
     }
 

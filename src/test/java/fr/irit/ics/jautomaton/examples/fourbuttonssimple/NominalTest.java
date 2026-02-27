@@ -33,15 +33,13 @@ class NominalTest {
     private Automaton<Event, State>
             getAutomatonAfterSequence(List<Event> queue) {
         Automaton<Event, State> automaton = TestConfiguration.getNewAutomaton();
-        queue.forEach((event) -> {
-            automaton.acceptEvent(event);
-        });
+        queue.forEach(automaton::acceptEvent);
         return automaton;
     }
 
     @Test
     void testInitialState() {
-        Automaton<Event, State> automaton = getAutomatonAfterSequence(Collections.EMPTY_LIST);
+        Automaton<Event, State> automaton = getAutomatonAfterSequence(Collections.emptyList());
         State state = automaton.getCurrentState();
         State expected = State.S1;
         verifyAssertions(automaton, expected, state, true, false, false, false);

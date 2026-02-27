@@ -142,7 +142,7 @@ class PairTest {
     @Test
     void testCompareWithNullShouldSuccess() {
         final Pair<Integer, Integer> pair1 = getNewPair();
-        final Pair<Integer, Integer> pair2 = (Pair) null;
+        final Pair<Integer, Integer> pair2 = (Pair<Integer, Integer>) null;
         int expectedComparison1 = Pair.DEFAULT_COMPARISON_RESULT;
 
         int comparison1 = pair1.compareTo(pair2);
