@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -77,7 +76,6 @@ class AutomatonTest {
     private static final String INCORRECT_PROPERTY_NAME = "foo";
     private static final String CORRECT_REGISTER_NAME = "a1";
     private static final String INCORRECT_REGISTER_NAME = "!a1";
-    private static final Logger LOG = Logger.getLogger(AutomatonTest.class.getName());
     private static final ConditionImpl p1 = new ConditionImpl(Boolean.TRUE);
     private static final ConditionImpl p2 = new ConditionImpl(Boolean.FALSE);
     private static final ConditionNeverVerified p3 = new ConditionNeverVerified();
