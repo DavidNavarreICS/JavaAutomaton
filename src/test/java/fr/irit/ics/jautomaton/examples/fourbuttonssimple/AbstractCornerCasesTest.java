@@ -37,7 +37,7 @@ public abstract class AbstractCornerCasesTest {
         final IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
             automaton.acceptEvent(aEvent);
         }, "Event " + aEvent + " not allowed in this context");
-        Assertions.assertNotNull(exception, String.format("{0}", exception.getMessage()));
+        Assertions.assertNotNull(exception, String.format("%s", exception.getMessage()));
     }
 
     protected final void initAutomaton() {
