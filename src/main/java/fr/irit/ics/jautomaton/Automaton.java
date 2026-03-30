@@ -125,7 +125,7 @@ import java.util.regex.Pattern;
  * @see fr.irit.ics.jautomaton.Action
  * @see fr.irit.ics.jautomaton.Condition
  */
-public final class Automaton<E extends Enum, S extends Enum> {
+public final class Automaton<E extends Enum<E>, S extends Enum<S>> {
 
     /**
      * The event enabling property prefix, used for property change listening.
