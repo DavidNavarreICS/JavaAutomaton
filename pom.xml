@@ -59,7 +59,7 @@ limitations under the License.
         <sonar.projectKey>DavidNavarreICS_JavaAutomaton</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.libraries></sonar.java.libraries>
-	<jupiter.version>6.0.3</jupiter.version>
+        <jupiter.version>6.0.3</jupiter.version>
     </properties>
     <dependencies>
         <dependency>
@@ -129,7 +129,7 @@ limitations under the License.
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.9.0</version>
                 </plugin>
-                 <plugin>   
+                <plugin>   
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>2.21.0</version>
@@ -283,7 +283,6 @@ limitations under the License.
                             <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
