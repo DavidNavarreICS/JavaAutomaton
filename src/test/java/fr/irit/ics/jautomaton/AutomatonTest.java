@@ -567,8 +567,8 @@ class AutomatonTest {
     void testAddPropertyChangeListenerAllowedState() {
         final Automaton<Event, State> automaton = getAutomaton();
         final PropertyChangeListener listener = new FooListener();
-        automaton.addPropertyChangeListener(Automaton.STATE_PROPERTY, listener);
-        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners(Automaton.STATE_PROPERTY);
+        automaton.addPropertyChangeListener(listener);
+        final PropertyChangeListener[] result = automaton.getPropertyChangeListeners();
         final int expectedSize = 1;
         Assertions.assertEquals(expectedSize, result.length, "Listener list should contain only one item");
         Assertions.assertEquals(listener, result[0], "Listener list should contain the added listener");
