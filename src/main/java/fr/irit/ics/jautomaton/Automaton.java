@@ -743,17 +743,15 @@ public final class Automaton<E extends Enum, S extends Enum> {
      * @param state the future state
      */
     private void goToState(final S state) {
-        LOG.log(Level.FINEST,
-                "Going to State {0}",
-                new Object[]{state});
+        LOG.log(Level.FINEST, "Going to State {0}", new Object[]{state});
         var oldState = currentState;
         currentState = state;
-        final Set<E> oldEnableEvents = new HashSet<>(events.size());
+        final Set<E> oldEnableEvents = HashSet.newHashSet(events.size());
         dataStructure.keySet().stream()
                 .filter((Pair<E, S> pair) -> (pair.getSecond().equals(oldState)))
                 .forEachOrdered((Pair<E, S> pair) -> oldEnableEvents.add(pair.getFirst()));
 
-        final Set<E> enableEvents = new HashSet<>(events.size());
+        final Set<E> enableEvents = HashSet.newHashSet(events.size());
         dataStructure.keySet().stream().
                 filter((Pair<E, S> pair) -> (pair.getSecond().equals(currentState))).
                 forEachOrdered((Pair<E, S> pair) -> enableEvents.add(pair.getFirst()));
