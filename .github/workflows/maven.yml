@@ -20,34 +20,33 @@ name: Java CI with Maven
 on:
   push:
     branches:
-    - '**'
+      - "**"
 
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    - name: Setup Java JDK
-      uses: actions/setup-java@v5
-      with:
-        java-version: '17'
-        distribution: 'adopt'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package
-    - name: Sonar with Maven
-      run: mvn verify sonar:sonar
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Check Javadoc
-      run: mvn javadoc:javadoc
-    - name: Check Licences
-      run: mvn apache-rat:check
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup Java JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "25"
+          distribution: "adopt"
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package
+      - name: Sonar with Maven
+        run: mvn verify sonar:sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Check Javadoc
+        run: mvn javadoc:javadoc
+      - name: Check Licences
+        run: mvn apache-rat:check
