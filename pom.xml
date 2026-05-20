@@ -59,7 +59,7 @@ limitations under the License.
         <sonar.projectKey>DavidNavarreICS_JavaAutomaton</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.libraries></sonar.java.libraries>
-        <jupiter.version>6.0.3</jupiter.version>
+        <jupiter.version>6.1.0</jupiter.version>
     </properties>
     <dependencies>
         <dependency>
