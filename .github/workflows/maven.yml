@@ -29,6 +29,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - uses: actions/checkout@v7
@@ -43,10 +45,10 @@ jobs:
       - name: Build with Maven
         run: mvn -B package
       - name: Sonar with Maven
+        if: env.SONAR_TOKEN != ''
         run: mvn verify sonar:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Check Javadoc
         run: mvn javadoc:javadoc
       - name: Check Licences
